@@ -7,7 +7,7 @@
 2. Start mysql `docker run -d --name mysql -e MYSQL_ROOT_PASSWORD=saturn -e MYSQL_USER=saturn -e MYSQL_PASSWORD=saturn -e MYSQL_DATABASE=saturn -p 3306:3306 mysql mysqld --default-authentication-plugin=mysql_native_password`
 3. Optionally test db connection `mysql -u saturn -p` (password is saturn)
 3. Build the saturn web server image `docker build -t saturn .`
-4. Run the saturn web server (**The mysql container must be running before this**) `docker run -p 8080:8080 --name saturn --link mysql:mysql saturn`
+4. Run the saturn web server (**The mysql container must be running before this**) `docker run -p 8080:8080 --name saturn --link mysql:mysql -v ${PWD}:/saturn saturn`
 
 #### Required Software
 

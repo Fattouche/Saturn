@@ -9,6 +9,7 @@ RUN mvn package
 
 #Execute
 FROM openjdk:8-jdk-alpine
-COPY --from=0 target/saturn-1.0.4.war .
+COPY --from=0 target/saturn-1.0.4.war /home/saturn-1.0.4.war
+WORKDIR /saturn
 EXPOSE 8080
-CMD ["java", "-jar", "saturn-1.0.4.war"]
+CMD ["java", "-jar", "/home/saturn-1.0.4.war"]
