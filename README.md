@@ -9,6 +9,9 @@
 3. Build the saturn web server image `docker build -t saturn .`
 4. Run the saturn web server (**The mysql container must be running before this**) `docker run -p 8080:8080 --name saturn --link mysql:mysql -v ${PWD}:/saturn saturn`
 
+
+## Manual Setup
+
 #### Required Software
 
 1. Java 8 or greater
