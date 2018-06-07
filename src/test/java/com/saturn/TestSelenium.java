@@ -11,9 +11,12 @@ import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
+import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.io.File;
 import java.util.concurrent.TimeUnit;
+import java.net.URL;
 
 import static org.junit.Assert.*;
 
@@ -26,8 +29,8 @@ public class TestSelenium {
 
 	@Before
 	public void setUp() throws Exception {
-		setDriver("firefox");
-		url = "http://localhost:8080";
+		setDriver("remote");
+		url = "http://10.0.75.1:8080";
 		driver.get(url);
 	}
 
@@ -114,6 +117,18 @@ public class TestSelenium {
 				ChromeOptions options = new ChromeOptions();
 				options.addArguments("--start-maximized");
 				driver = new ChromeDriver(options);
+				break;
+			case "remote":
+				DesiredCapabilities capabilities = new DesiredCapabilities();
+				capabilities.setBrowserName("firefox");
+				URL remoteUrl;
+				try { 
+					remoteUrl = new URL("http://10.0.75.1:4444/wd/hub");
+				} catch (Exception e) {
+					return; // This is bad but w/e hopefully the url is valid
+				}
+
+				driver = new RemoteWebDriver(remoteUrl, capabilities);
 				break;
 			default:
 				driver = new HtmlUnitDriver();

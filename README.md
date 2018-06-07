@@ -2,12 +2,20 @@
 
 ## Development
 
-## Using docker(will take long first time and cache from then on)
+## Using docker (will take long first time and cache from then on)
 1. Pull a mysql docker image: `docker pull mysql`
 2. Start mysql `docker run -d --name mysql -e MYSQL_ROOT_PASSWORD=saturn -e MYSQL_USER=saturn -e MYSQL_PASSWORD=saturn -e MYSQL_DATABASE=saturn -p 3306:3306 mysql mysqld --default-authentication-plugin=mysql_native_password`
 3. Optionally test db connection `mysql -u saturn -p` (password is saturn)
 3. Build the saturn web server image `docker build -t saturn .`
 4. Run the saturn web server (**The mysql container must be running before this**) `docker run -p 8080:8080 --name saturn --link mysql:mysql -v ${PWD}:/saturn saturn`
+
+## Running tests with Docker
+1. Ensure you have the site up and running (following instructions above)
+2. Start selenium server `docker run -d -p 4444:4444 --shm-size 2g selenium/standalone-firefox:3.12.0-boron`
+3. Build the test image `docker build -t saturn_test -f Dockerfile-test .`
+4. Run the saturn tests `docker run --name saturn_test -v ${PWD}:/saturn saturn_test`
+
+NOTE: Right now the IP of the host is hardcoded in TestSelenium to 10.0.75.1. You will have to change this if your IP is different. This should probably be an environmental variable or something in the future.
 
 #### Required Software
 
