@@ -1,7 +1,7 @@
 # saturn
 
 ## Running Saturn
-1. docker-compose up
+1. `docker-compose up`
 
 ## Running tests with Docker
 1. Ensure you have the site up and running (following instructions below)
