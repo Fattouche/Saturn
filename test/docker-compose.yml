@@ -1,0 +1,14 @@
+version: '3'
+services:
+  selenium:
+    image: selenium/standalone-firefox:3.12.0-boron
+    container_name: saturn_selenium
+    shm_size: 2g
+    ports:
+      - "4444:4444"
+  saturn_test:
+    build:
+      context: .
+    container_name: saturn_test
+    volumes:
+      - ..:/saturn
