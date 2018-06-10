@@ -1,0 +1,24 @@
+version: '3'
+services:
+  mysql:
+    image: mysql
+    container_name: saturn_mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: saturn
+      MYSQL_USER: saturn
+      MYSQL_PASSWORD: saturn
+      MYSQL_DATABASE: saturn
+    ports:
+      - "3306"
+    command: [ "mysqld", "--default-authentication-plugin=mysql_native_password" ]
+
+  saturn:
+    build:
+      context: .
+    depends_on: 
+      - mysql
+    container_name: saturn_web_server
+    ports:
+      - "8080:8080" 
+    volumes: 
+      - .:/saturn
