@@ -11,7 +11,7 @@
 
 Only use these if you hate things that are easy
 
-## Running tests with Docker directly
+### Running tests with Docker directly
 1. Ensure you have the site up and running (following instructions below)
 2. Start selenium server `docker run -d -p 4444:4444 --shm-size 2g selenium/standalone-firefox:3.12.0-boron`
 3. Build the test image `docker build -t saturn_test -f Dockerfile-test .`
