@@ -30,7 +30,7 @@ public class TestSelenium {
 	@Before
 	public void setUp() throws Exception {
 		setDriver("remote");
-		url = "http://10.0.75.1:8080";
+		url = "http://saturn:8080";
 		driver.get(url);
 	}
 
@@ -123,7 +123,7 @@ public class TestSelenium {
 				capabilities.setBrowserName("firefox");
 				URL remoteUrl;
 				try { 
-					remoteUrl = new URL("http://10.0.75.1:4444/wd/hub");
+					remoteUrl = new URL("http://selenium:4444/wd/hub");
 				} catch (Exception e) {
 					return; // This is bad but w/e hopefully the url is valid
 				}
