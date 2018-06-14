@@ -29,8 +29,17 @@ public class TestSelenium {
 
 	@Before
 	public void setUp() throws Exception {
-		setDriver("remote");
-		url = "http://saturn:8080";
+		String driverName = System.getenv("SATURN_DRIVER");
+		if (driverName == null) {
+			driverName = "remote";
+		}
+
+		url = System.getenv("SATURN_URL");
+		if (url == null) {
+			url = "http://saturn:8080";
+		}
+
+		setDriver(driverName);
 		driver.get(url);
 	}
 
@@ -121,9 +130,15 @@ public class TestSelenium {
 			case "remote":
 				DesiredCapabilities capabilities = new DesiredCapabilities();
 				capabilities.setBrowserName("firefox");
+				
+				String remoteUrlString = System.getenv("SELENIUM_URL");
+				if (remoteUrlString == null) {
+					remoteUrlString = "http://selenium:4444/wd/hub";
+				}
+
 				URL remoteUrl;
-				try { 
-					remoteUrl = new URL("http://selenium:4444/wd/hub");
+				try {
+					remoteUrl = new URL(remoteUrlString);
 				} catch (Exception e) {
 					return; // This is bad but w/e hopefully the url is valid
 				}
