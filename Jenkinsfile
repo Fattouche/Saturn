@@ -20,7 +20,7 @@ pipeline {
                     body: """<p>FAILED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]':</p>
                         <p>Check console output at &QUOT;<a href='${env.BUILD_URL}'>${env.JOB_NAME} [${env.BUILD_NUMBER}]</a>&QUOT;</p>""",
                     recipientProviders: [[$class: 'DevelopersRecipientProvider']],
-                    to: fattouch@uvic.ca,
+                    to: 'fattouch@uvic.ca',
                     mimetype: 'text/html'
                 )
         }
