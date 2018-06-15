@@ -24,8 +24,8 @@ spring:
         serialization.indent_output: true
     datasource:
         type: com.zaxxer.hikari.HikariDataSource
-        url: jdbc:mysql://localhost:8008/group8?useUnicode=true&characterEncoding=utf8&useSSL=false  #Replace with your database url
-        name:
+        url: jdbc:mysql://localhost:8008  #Replace with your database url
+        name: group8
         username: group8  #Replace this field with your database username.
         password: 6hWx_F3W  #Replace this field with your database password.
         hikari:
