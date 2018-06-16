@@ -38,7 +38,7 @@ public class TestSelenium {
 		if (url == null) {
 			url = "http://saturn:8080";
 		}
-
+        System.out.println("Driver Name: " + driverName + " Url: " + url;
 		setDriver(driverName);
 		driver.get(url);
 	}
