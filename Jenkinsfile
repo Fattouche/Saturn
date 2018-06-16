@@ -1,13 +1,19 @@
 pipeline {
     agent any
+    
+    
+    environment {
+        SATURN_DRIVER = 'firefox'
+        SATURN_URL    = 'http://localhost:8080'
+    }
+    
+
     stages {
         stage('Build') { 
             steps {
                 sh 'mvn -B -DskipTests clean package'
 				sh 'rm src/main/resources/config/application-dev.yml'
 				sh 'cp src/main/resources/config/application-dev-jenkins.yml src/main/resources/config/application-dev.yml'
-				sh 'export SATURN_DRIVER=firefox'
-				sh 'export SATURN_URL=http://localhost:8080'
 				sh 'mvn -Dtest=TestSelenium test'
             }
         }
