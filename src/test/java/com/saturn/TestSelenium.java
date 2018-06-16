@@ -35,6 +35,7 @@ public class TestSelenium {
             System.out.format("%s=%s%n",
                               envName,
                               env.get(envName));
+        }
 		String driverName = System.getenv("SATURN_DRIVER");
 		if (driverName == null) {
 			driverName = "remote";
