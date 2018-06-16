@@ -16,7 +16,7 @@ pipeline {
 				sh 'cp src/main/resources/config/application-dev-jenkins.yml src/main/resources/config/application-dev.yml'
 				sh 'mvn -Dtest=TestSelenium test'
             }
-        } co
+        }
     }
     post {
         failure {
