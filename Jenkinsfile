@@ -8,7 +8,7 @@ pipeline {
 				sh 'cp src/main/resources/config/application-dev-jenkins.yml src/main/resources/config/application-dev.yml'
 				sh 'SATURN_DRIVER=firefox'
 				sh 'SATURN_URL=http://localhost:8080'
-				sh 'mvn -Dtest=TestSelenium'
+				sh 'mvn -Dtest=TestSelenium test'
             }
         }
     }
