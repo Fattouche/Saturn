@@ -49,7 +49,7 @@ public class TestSelenium {
 
 	private void login(String username, String password){
 		driver.get(url);
-		driver.findElement(By.id("login")).click();us
+		driver.findElement(By.id("login")).click();
 		driver.findElement(By.id("username")).sendKeys(username);
 		driver.findElement(By.id("password")).sendKeys(password);
 
