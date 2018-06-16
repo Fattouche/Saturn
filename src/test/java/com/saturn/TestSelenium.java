@@ -30,12 +30,6 @@ public class TestSelenium {
 
 	@Before
 	public void setUp() throws Exception {
-        Map<String, String> env = System.getenv();
-        for (String envName : env.keySet()) {
-            System.out.format("%s=%s%n",
-                              envName,
-                              env.get(envName));
-        }
 		String driverName = System.getenv("SATURN_DRIVER");
 		if (driverName == null) {
 			driverName = "remote";
