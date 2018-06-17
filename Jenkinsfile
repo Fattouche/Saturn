@@ -22,7 +22,7 @@ pipeline {
                 sh 'cd dist'
                 sh 'ls'
                 sh 'java -jar saturn-1.0.4.war &'
-                sh 'sleep 
+                sh 'sleep'
 				sh 'mvn -Dtest=TestSelenium test'
             }
         }
