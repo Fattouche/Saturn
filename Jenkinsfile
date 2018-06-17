@@ -20,8 +20,9 @@ pipeline {
                 sh 'mkdir dist/mediaResources'
                 sh 'cp src/main/resources/config/application-dev-jenkins.yml dist/config/application-dev.yml'
                 sh 'cd dist'
+                sh 'ls'
                 sh 'java -jar saturn-1.0.4.war &'
-                sh 'sleep 30' 
+                sh 'sleep 
 				sh 'mvn -Dtest=TestSelenium test'
             }
         }
