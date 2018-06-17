@@ -14,6 +14,14 @@ pipeline {
                 sh 'mvn -B -DskipTests clean package'
 				sh 'rm src/main/resources/config/application-dev.yml'
 				sh 'cp src/main/resources/config/application-dev-jenkins.yml src/main/resources/config/application-dev.yml'
+                sh 'mkdir dist'
+                sh 'cp target/saturn-1.0.4.war dist'
+                sh 'mkdir dist/config'
+                sh 'mkdir dist/mediaResources'
+                sh 'cp src/main/resources/config/application-dev-jenkins.yml dist/config/application-dev.yml'
+                sh 'cd dist'
+                sh 'java -jar saturn-1.0.4.war &'
+                sh 'sleep 30' 
 				sh 'mvn -Dtest=TestSelenium test'
             }
         }
