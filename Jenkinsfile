@@ -11,7 +11,6 @@ pipeline {
     stages {
         stage('Build') { 
             steps {
-                sh 'find / -name "*firefox*" | grep -v "Permission denied"'
                 sh 'mvn -B -DskipTests clean package'
 				sh 'rm src/main/resources/config/application-dev.yml'
 				sh 'cp src/main/resources/config/application-dev-jenkins.yml src/main/resources/config/application-dev.yml'
