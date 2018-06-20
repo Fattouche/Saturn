@@ -113,8 +113,8 @@ public class TestSelenium {
 
 	}
 
-    @Test
-    public void deleteSaturnVaultAccountTest(){
+	@Test
+	public void deleteSaturnVaultAccountTest(){
 		login();
 		String siteName = "Site"+ RandomStringUtils.randomAlphanumeric(8);
 		createSaturnVaultAccount(siteName);
@@ -128,7 +128,8 @@ public class TestSelenium {
 		//		after canceling  the vault deletion, the row representing it is  there.
 		assertTrue(isElementPresent(By.cssSelector(".site-" + siteName + " .delete-vault")));
 
-    }
+	}
+	// TODO - add tests for show passwordd???
 
 	@After
 	public void tearDown() throws Exception {
