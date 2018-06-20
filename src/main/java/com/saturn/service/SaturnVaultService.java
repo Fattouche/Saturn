@@ -88,9 +88,13 @@ public class SaturnVaultService {
 	 */
 	public void delete(Long id) {
 		log.debug("Request to delete SaturnVault : {}", id);
+		log.debug("Current user: {}", saturnPassRepository.findOne(id).getUser().getEmail());
+		log.debug("What security says the current user is: {}", SecurityUtils.getCurrentUser());
 
-		if (saturnPassRepository.findOne(id).getUser().equals(SecurityUtils.getCurrentUser())) {
-            saturnPassRepository.delete(id);
+		if (saturnPassRepository.findOne(id).getUser().getEmail().equals(SecurityUtils.getCurrentUser())) {
+			log.debug("Authorized - deleting saturn vault : {}", id);
+			saturnPassRepository.delete(id);
+
         }
 	}
 }
