@@ -37,7 +37,7 @@
             <tbody>
                 <tr ng-repeat="saturnPass in vm.saturnPasses track by saturnPass.id">
                     <td>{{saturnPass.id}}</td>
-                    <td>{{saturnPass.site}}</td>
+                    <td >{{saturnPass.site}}</td>
                     <td>{{saturnPass.login}}</td>
                     <td>
 						<div>
@@ -48,14 +48,14 @@
                     <td>{{saturnPass.createdDate| date:'medium'}}</td>
                     <td>{{saturnPass.lastModifiedDate| date:'medium'}}</td>
                     <td class="text-right">
-                        <div class="btn-group flex-btn-group-container">
+                        <div class="btn-group flex-btn-group-container site-{{saturnPass.site}}">
                             <button ui-sref="saturn-vault.edit({id:saturnPass.id})"
-                                    class="btn btn-info btn-sm">
+                                    class="btn btn-info btn-sm edit-vault">
                                 <span class="glyphicon glyphicon-pencil"></span>
                                 <span class="hidden-xs hidden-sm"></span>
                             </button>
                             <button ui-sref="saturn-vault.delete({id:saturnPass.id})"
-                                    class="btn btn-danger btn-sm">
+                                    class="btn btn-danger btn-sm delete-vault">
                                 <span class="glyphicon glyphicon-remove-circle"></span>
                                 <span class="hidden-xs hidden-sm"></span>
                             </button>

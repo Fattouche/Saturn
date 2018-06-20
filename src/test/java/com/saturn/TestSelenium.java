@@ -57,6 +57,7 @@ public class TestSelenium {
 		driver.findElement(By.id("password")).submit();
 	}
 
+
 	@Test
 	public void headerIsCorrect() throws Exception {
 		assertEquals("SATURN SECURITY SYSTEM", driver.findElement(By.tagName("h1")).getText().toUpperCase());
@@ -76,12 +77,9 @@ public class TestSelenium {
 		assertFalse(isElementPresent(By.id("account-menu")));
 	}
 
-	@Test
-	public void createSaturnVaultAccount() {
-		login();
+	public void createSaturnVaultAccount(String siteName){
 		driver.get(url+"/#/saturn-vault/new");
 
-		String siteName = "Site"+ RandomStringUtils.randomAlphanumeric(8);
 		String login = "juju";
 		String password = "mozzarella";
 
@@ -90,13 +88,37 @@ public class TestSelenium {
 		driver.findElement(By.id("field_password")).sendKeys(password);
 
 		driver.findElement(By.cssSelector("form[name='editForm']")).submit();
+	}
+
+	@Test
+	public void createSaturnVaultAccountTest() {
+		login();
+		String siteName = "Site"+ RandomStringUtils.randomAlphanumeric(8);
+		createSaturnVaultAccount(siteName);
 
 		//after creation ensure the account is in the list
-
 		driver.findElement(By.cssSelector("table > tbody > tr")); // implicit wait
 		WebElement siteNameCell = driver.findElement(By.xpath("//td[contains(text(),'" + siteName + "')]"));
 		assertEquals(siteName, siteNameCell.getText());
 	}
+
+	public void deleteSaturnVaultAccount(String siteName){
+
+		driver.findElement(By.cssSelector(".site-" + siteName + " .delete-vault")).click();
+		driver.findElement(By.cssSelector("form[name=deleteForm] .delete-button")).click();
+
+
+	}
+
+    @Test
+    public void deleteSaturnVaultAccountTest(){
+		login();
+		String siteName = "Site"+ RandomStringUtils.randomAlphanumeric(8);
+		createSaturnVaultAccount(siteName);
+		deleteSaturnVaultAccount(siteName);
+		//		after deleting the vault, the row representing it is not there.
+		assertFalse(isElementPresent(By.cssSelector(".site-" + siteName + " .delete-vault")));
+    }
 
 	@After
 	public void tearDown() throws Exception {
