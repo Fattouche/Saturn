@@ -38,6 +38,9 @@
                 vm.totalItems = headers('X-Total-Count');
                 vm.queryCount = vm.totalItems;
                 vm.saturnPasses = data;
+                vm.saturnPasses.forEach(pass => {
+                    pass.show = false
+                });
                 vm.page = pagingParams.page;
             }
 
@@ -53,6 +56,11 @@
 
         function toggleVisible(id) {
             //TODO show password and change eye icon
+            vm.saturnPasses.forEach(pass => {
+                if(pass.id === id){
+                    pass.show = !pass.show
+                }
+            })
         }
 
         function transition() {

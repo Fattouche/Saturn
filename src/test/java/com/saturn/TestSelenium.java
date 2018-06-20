@@ -102,11 +102,14 @@ public class TestSelenium {
 		assertEquals(siteName, siteNameCell.getText());
 	}
 
-	public void deleteSaturnVaultAccount(String siteName){
+	public void deleteSaturnVaultAccount(String siteName, boolean cancel){
 
 		driver.findElement(By.cssSelector(".site-" + siteName + " .delete-vault")).click();
-		driver.findElement(By.cssSelector("form[name=deleteForm] .delete-button")).click();
-
+		if(!cancel){
+			driver.findElement(By.cssSelector("form[name=deleteForm] .delete-button")).click();
+		} else {
+			driver.findElement(By.cssSelector("form[name=deleteForm] .cancel-button")).click();
+		}
 
 	}
 
@@ -115,9 +118,16 @@ public class TestSelenium {
 		login();
 		String siteName = "Site"+ RandomStringUtils.randomAlphanumeric(8);
 		createSaturnVaultAccount(siteName);
-		deleteSaturnVaultAccount(siteName);
+		deleteSaturnVaultAccount(siteName, false);
 		//		after deleting the vault, the row representing it is not there.
 		assertFalse(isElementPresent(By.cssSelector(".site-" + siteName + " .delete-vault")));
+
+		siteName += "-change";
+		createSaturnVaultAccount(siteName);
+		deleteSaturnVaultAccount(siteName, true);
+		//		after canceling  the vault deletion, the row representing it is  there.
+		assertTrue(isElementPresent(By.cssSelector(".site-" + siteName + " .delete-vault")));
+
     }
 
 	@After
