@@ -69,4 +69,11 @@ To run the distribution packaged application:
 2. Configure the database and server port in the `config/application-dev.yml` file as explained above
 3. Run `java -jar saturn-1.0.4.war` (sudo might be necessary if the application is configured to run on a port below 1024)
 
+#### Testing Package
+
+1. Start the saturn server
+2. run mvn  -Dtest=TestSelenium test
+
+
 Finally navigate to [http://localhost:8080](http://localhost:8080) in your browser (note the port number might be different according to your configuration and deployment environment).
+
