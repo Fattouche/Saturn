@@ -49,19 +49,6 @@ public class TestVault {
 		assertFalse(helper.isElementPresent(By.id("account-menu")));
 	}
 
-	public void createSaturnVaultAccount(String siteName){
-		helper.driver.get(helper.url+"/#/saturn-vault/new");
-
-		String login = "juju";
-		String password = "mozzarella";
-
-		helper.driver.findElement(By.id("field_site")).sendKeys(siteName);
-		helper.driver.findElement(By.id("field_login")).sendKeys(login);
-		helper.driver.findElement(By.id("field_password")).sendKeys(password);
-
-		helper.driver.findElement(By.cssSelector("form[name='editForm']")).submit();
-	}
-
 	@Test
 	public void createSaturnVaultAccountTest() {
 		helper.login();
@@ -72,17 +59,6 @@ public class TestVault {
 		helper.driver.findElement(By.cssSelector("table > tbody > tr")); // implicit wait
 		WebElement siteNameCell = helper.driver.findElement(By.xpath("//td[contains(text(),'" + siteName + "')]"));
 		assertEquals(siteName, siteNameCell.getText());
-	}
-
-	public void deleteSaturnVaultAccount(String siteName, boolean cancel){
-
-		helper.driver.findElement(By.cssSelector(".site-" + siteName + " .delete-vault")).click();
-		if(!cancel){
-			helper.driver.findElement(By.cssSelector("form[name=deleteForm] .delete-button")).click();
-		} else {
-			helper.driver.findElement(By.cssSelector("form[name=deleteForm] .cancel-button")).click();
-		}
-
 	}
 
 	@Test
