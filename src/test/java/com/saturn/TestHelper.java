@@ -74,8 +74,6 @@ public class TestHelper {
 
 	}
 
-	// TODO - add tests for show passwordd???
-
 	public void tearDown() throws Exception {
 		this.driver.quit();
 	}
@@ -108,7 +106,7 @@ public class TestHelper {
 			case "remote":
 				DesiredCapabilities capabilities = new DesiredCapabilities();
 				capabilities.setBrowserName("firefox");
-				
+
 				String remoteUrlString = System.getenv("SELENIUM_URL");
 				if (remoteUrlString == null) {
 					remoteUrlString = "http://selenium:4444/wd/hub";

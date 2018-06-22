@@ -1,12 +1,12 @@
 # saturn
 
 ## Running Saturn
-1. `docker-compose up`
+1. `docker-compose up --build`
 
 ## Running tests
 1. Ensure Saturn is running (see above)
 2. `cd test`
-3. `docker-compose up`
+3. `docker-compose up --build`
 
 ## Alternative methods for running stuff
 

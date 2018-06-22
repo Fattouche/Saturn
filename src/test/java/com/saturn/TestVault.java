@@ -77,7 +77,27 @@ public class TestVault {
 		assertTrue(helper.isElementPresent(By.cssSelector("#site-" + siteName + " .delete-vault")));
 
 	}
-	// TODO - add tests for show passwordd???
+
+	@Test
+	public void showThenHidePassword() {
+		helper.login();
+		String siteName = "Site"+ RandomStringUtils.randomAlphanumeric(8);
+		helper.createSaturnVaultAccount(siteName);
+
+		// Assert that no saturnpass-password elements exist that are showing plaintext
+		assertFalse(helper.isElementPresent(By.cssSelector("input[type=text].saturnpass-password")));
+
+		// Click the button to view the password we just created
+		// The row is id'd by "site-[siteName]", and the visibility toggler
+		// has class .toggle-password-visibility
+		// Note that a space in CSS selectors represents a parent->child relationship
+		helper.driver.findElement(By.cssSelector("#site-" + siteName + " .toggle-password-visible")).click();
+
+		// Assert that our created password now shows in plaintext
+		assertTrue(helper.isElementPresent(By.cssSelector("#site-" + siteName + " input[type=text].saturnpass-password")));
+
+		helper.deleteSaturnVaultAccount(siteName, false);
+	}
 
 	@After
 	public void tearDown() throws Exception {
