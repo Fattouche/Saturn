@@ -13,12 +13,10 @@
 Only use these if you hate things that are easy
 
 ### Running tests with Docker directly
-1. Ensure you have the site up and running (following instructions below)
-2. Start selenium server `docker run -d -p 4444:4444 --shm-size 2g selenium/standalone-firefox:3.12.0-boron`
-3. Build the test image `docker build -t saturn_test -f Dockerfile-test .`
-4. Run the saturn tests `docker run --name saturn_test -v ${PWD}:/saturn saturn_test`
-
-NOTE: Right now the IP of the host is hardcoded in TestSelenium to 10.0.75.1. You will have to change this if your IP is different. This should probably be an environmental variable or something in the future.
+1. Ensure you have the site up and running (following instructions below) and run these commands from inside the `test` folder.
+2. Start selenium server `docker run -d --name selenium --link saturn --shm-size 2g selenium/standalone-firefox:3.12.0-boron`
+3. Build the test image `docker build -t saturn_test .`
+4. Run the saturn tests `docker run --name saturn_test --link selenium -v ${PWD}/..:/saturn saturn_test`
 
 ### Running Saturn with Docker directly (will take long first time and cache from then on)
 1. Pull a mysql docker image: `docker pull mysql`
