@@ -68,13 +68,13 @@ public class TestVault {
 		helper.createSaturnVaultAccount(siteName);
 		helper.deleteSaturnVaultAccount(siteName, false);
 		//		after deleting the vault, the row representing it is not there.
-		assertFalse(helper.isElementPresent(By.cssSelector(".site-" + siteName + " .delete-vault")));
+		assertFalse(helper.isElementPresent(By.cssSelector("#site-" + siteName + " .delete-vault")));
 
 		siteName += "-change";
 		helper.createSaturnVaultAccount(siteName);
 		helper.deleteSaturnVaultAccount(siteName, true);
 		//		after canceling  the vault deletion, the row representing it is  there.
-		assertTrue(helper.isElementPresent(By.cssSelector(".site-" + siteName + " .delete-vault")));
+		assertTrue(helper.isElementPresent(By.cssSelector("#site-" + siteName + " .delete-vault")));
 
 	}
 	// TODO - add tests for show passwordd???

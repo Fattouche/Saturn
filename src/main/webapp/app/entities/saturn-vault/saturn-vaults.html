@@ -35,7 +35,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr ng-repeat="saturnPass in vm.saturnPasses track by saturnPass.id">
+                <tr ng-repeat="saturnPass in vm.saturnPasses track by saturnPass.id" id="site-{{saturnPass.site}}">
                     <td>{{saturnPass.id}}</td>
                     <td >{{saturnPass.site}}</td>
                     <td>{{saturnPass.login}}</td>
@@ -48,7 +48,7 @@
                     <td>{{saturnPass.createdDate| date:'medium'}}</td>
                     <td>{{saturnPass.lastModifiedDate| date:'medium'}}</td>
                     <td class="text-right">
-                        <div class="btn-group flex-btn-group-container site-{{saturnPass.site}}">
+                        <div class="btn-group flex-btn-group-container">
                             <button ui-sref="saturn-vault.edit({id:saturnPass.id})"
                                     class="btn btn-info btn-sm edit-vault">
                                 <span class="glyphicon glyphicon-pencil"></span>
