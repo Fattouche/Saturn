@@ -4,7 +4,7 @@ pipeline {
     
     environment {
         SATURN_DRIVER = 'asdasd'
-        SATURN_URL    = 'http://localhost:8008'
+        SATURN_URL    = 'http://localhost:5000'
     }
     
 
