@@ -41,7 +41,12 @@
                     <td>{{saturnPass.login}}</td>
                     <td>
 						<div>
-							<input type="{{saturnPass.show ? 'text' : 'password'}}" ng-model="saturnPass.password" class="saturnpass-password" style="font-size: 1.6em; margin: -5px 0;" readonly/>
+                            <input  type="{{saturnPass.show ? 'text' : 'password'}}" 
+                                    ng-model="saturnPass.password" 
+                                    class="saturnpass-password" 
+                                    style="font-size: 1.6em; margin: -5px 0;" 
+                                    ng-click="vm.copyToClip(saturnPass.password)"
+                                    readonly/>
 							<span ng-click="vm.toggleVisible(saturnPass.id)" style="float:right; cursor: pointer; padding: 5px 20px 0 0;" class="glyphicon glyphicon-eye-open toggle-password-visible"></span>
 						</div>
 					</td>

@@ -16,6 +16,7 @@
         vm.transition = transition;
         vm.itemsPerPage = paginationConstants.itemsPerPage;
         vm.toggleVisible = toggleVisible;
+        vm.copyToClip = copyToClip;
 
         loadAll();
 
@@ -61,6 +62,17 @@
                     pass.show = !pass.show
                 }
             })
+        }
+
+        function copyToClip(text){
+            var fakeInput = document.createElement("input");
+            fakeInput.value = text;
+            document.body.appendChild(fakeInput);
+            fakeInput.focus();
+            fakeInput.select();
+            document.execCommand("copy");
+            console.debug("Copied pass to clipboard")
+            document.body.removeChild(fakeInput);
         }
 
         function transition() {
