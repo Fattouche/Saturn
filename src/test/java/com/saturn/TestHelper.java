@@ -71,14 +71,24 @@ public class TestHelper {
 		// wait for the submission to finish
 		new WebDriverWait(driver, 3).until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector("form[name='editForm']")));
 	}
-
+	
 	public void deleteSaturnVaultAccount(String siteName, boolean cancel){
-
+		closeForm("editForm");
+		closeForm("deleteForm");
+		
 		driver.findElement(By.cssSelector("#site-" + siteName + " .delete-vault")).click();
 		if(!cancel){
 			driver.findElement(By.cssSelector("form[name=deleteForm] .delete-button")).click();
 		} else {
 			driver.findElement(By.cssSelector("form[name=deleteForm] .cancel-button")).click();
+		}
+
+	}
+
+	public void closeForm(String name){
+		if(isElementPresent(By.cssSelector("form[name='"+name+"']"))){
+			driver.findElement(By.cssSelector("form[name='"+name+"'] .cancel-button")).click();
+			new WebDriverWait(driver, 3).until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector("form[name='"+name+"']")));
 		}
 
 	}

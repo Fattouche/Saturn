@@ -1,19 +1,17 @@
 package com.saturn;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-
-import java.awt.Toolkit;
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.UnsupportedFlavorException;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 
 public class TestCopyPass {
@@ -61,14 +59,22 @@ public class TestCopyPass {
 	}
 	
 	public String getClipboardContents(){
-		try {
-			Toolkit toolkit = Toolkit.getDefaultToolkit();
-			Clipboard clipboard = toolkit.getSystemClipboard();
-			return (String) clipboard.getData(DataFlavor.stringFlavor);
-		} catch(Exception e){
-			System.err.println(e.getMessage());
-			return "";
-		}
+		// paste the clipboard contents in an input box
+		// we have to do this because running the tests headless does not allow us to access the clipboard in the traditional way, using the clipboard class
+		// we use the site-name input field of the new saturn vault page instead
+		helper.driver.get(helper.url+"/#/saturn-vault/new");
+		assertTrue(helper.isElementPresent(By.id("field_site")));
+		WebElement e = helper.driver.findElement(By.id("field_site"));
+		// click the input box and paste into it
+		e.click();
+		e.sendKeys(Keys.CONTROL + "v");
+		String text = e.getAttribute("value");	
+		// dismiss the modal 
+		helper.driver.findElement(By.cssSelector("form[name=editForm] .cancel-button")).click();
+			// wait for the modal to leave
+		new WebDriverWait(helper.driver, 3).until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector("form[name='editForm']")));
+
+		return text;
 	}
 	
 	
