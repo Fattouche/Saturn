@@ -1,20 +1,22 @@
 package com.saturn;
 
-import org.apache.commons.lang3.RandomStringUtils;
-import org.openqa.selenium.*;
+import java.io.File;
+import java.net.URL;
+import java.util.concurrent.TimeUnit;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
-import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
-
-import java.io.File;
-import java.util.concurrent.TimeUnit;
-import java.net.URL;
-import java.util.Map;
+import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class TestHelper {
 	public WebDriver driver;
@@ -22,6 +24,8 @@ public class TestHelper {
 	public boolean acceptNextAlert = true;
 	public String validUsername = "j.oberoi@saturn.com";
 	public String validPassword = "pizzaman";
+	public String defaultLogin = "speaker";
+	public String defaultPass = "guitar";
 
 	public TestHelper() throws Exception {
 		String driverName = System.getenv("SATURN_DRIVER");
@@ -51,16 +55,21 @@ public class TestHelper {
 	}
 
 	public void createSaturnVaultAccount(String siteName){
+		createSaturnVaultAccount(siteName, defaultLogin, defaultPass);
+	}
+
+	public void createSaturnVaultAccount(String siteName, String login, String password){
 		driver.get(url+"/#/saturn-vault/new");
 
-		String login = "juju";
-		String password = "mozzarella";
 
 		driver.findElement(By.id("field_site")).sendKeys(siteName);
 		driver.findElement(By.id("field_login")).sendKeys(login);
 		driver.findElement(By.id("field_password")).sendKeys(password);
 
 		driver.findElement(By.cssSelector("form[name='editForm']")).submit();
+
+		// wait for the submission to finish
+		new WebDriverWait(driver, 10).until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector("form[name='editForm']")));
 	}
 
 	public void deleteSaturnVaultAccount(String siteName, boolean cancel){

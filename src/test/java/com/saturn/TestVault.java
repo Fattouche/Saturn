@@ -19,15 +19,19 @@ import java.util.concurrent.TimeUnit;
 import java.net.URL;
 import java.util.Map;
 
+import com.saturn.TestDeleteAccount;
+
 import static org.junit.Assert.*;
 
 public class TestVault {
 	private TestHelper helper;
+	public String siteName;
 
 	@Before
 	public void setUp() throws Exception {
 		helper = new TestHelper();
 		helper.driver.get(helper.url);
+		siteName = "Site"+ RandomStringUtils.randomAlphanumeric(8);
 	}
 
 	@Test
@@ -52,7 +56,6 @@ public class TestVault {
 	@Test
 	public void createSaturnVaultAccountTest() {
 		helper.login();
-		String siteName = "Site"+ RandomStringUtils.randomAlphanumeric(8);
 		helper.createSaturnVaultAccount(siteName);
 
 		//after creation ensure the account is in the list
@@ -61,28 +64,15 @@ public class TestVault {
 		assertEquals(siteName, siteNameCell.getText());
 	}
 
-	@Test
-	public void deleteSaturnVaultAccountTest(){
-		helper.login();
-		String siteName = "Site"+ RandomStringUtils.randomAlphanumeric(8);
-		helper.createSaturnVaultAccount(siteName);
-		helper.deleteSaturnVaultAccount(siteName, false);
-		//		after deleting the vault, the row representing it is not there.
-		assertFalse(helper.isElementPresent(By.cssSelector("#site-" + siteName + " .delete-vault")));
 
-		siteName += "-change";
-		helper.createSaturnVaultAccount(siteName);
-		helper.deleteSaturnVaultAccount(siteName, true);
-		//		after canceling  the vault deletion, the row representing it is  there.
-		assertTrue(helper.isElementPresent(By.cssSelector("#site-" + siteName + " .delete-vault")));
-
-	}
 
 	@Test
 	public void showThenHidePassword() {
 		helper.login();
-		String siteName = "Site"+ RandomStringUtils.randomAlphanumeric(8);
-		helper.createSaturnVaultAccount(siteName);
+		
+		if(!helper.isElementPresent(By.cssSelector("#site-" + siteName))){
+			helper.createSaturnVaultAccount(siteName);
+		}
 
 		// Assert that no saturnpass-password elements exist that are showing plaintext
 		assertFalse(helper.isElementPresent(By.cssSelector("input[type=text].saturnpass-password")));
@@ -96,11 +86,13 @@ public class TestVault {
 		// Assert that our created password now shows in plaintext
 		assertTrue(helper.isElementPresent(By.cssSelector("#site-" + siteName + " input[type=text].saturnpass-password")));
 
-		helper.deleteSaturnVaultAccount(siteName, false);
 	}
-
+	
 	@After
-	public void tearDown() throws Exception {
+	public void tearDown() throws Exception {String 
+		if(helper.isElementPresent(By.cssSelector("#site-" + siteName))){
+=			helper.deleteSaturnVaultAccount(siteName, false);
+		}
 		helper.tearDown();
 	}
 }
