@@ -16,19 +16,23 @@ import static org.junit.Assert.*;
 public class TestListPasswords {
     private TestHelper helper;
     private List<String> expectedColumns;
+    private String siteName;
 
 	@Before
 	public void setUp() throws Exception {
         helper = new TestHelper();
         initExpectedColumns();
-		helper.driver.get(helper.url);
+        helper.driver.get(helper.url);
+        siteName = "Site"+ RandomStringUtils.randomAlphanumeric(8);
+        helper.login();
+        helper.createSaturnVaultAccount(siteName);
     }
     
     //List all saturn vault passwords/accounts and test that we can see the expected columns
 	@Test
 	public void listPasswordsTest(){
-		helper.login();
-		List<List<String>> passwords = helper.listSaturnVaultAccounts();
+        List<List<String>> passwords = helper.listSaturnVaultAccounts();
+        System.out.println(Arrays.toString(passwords.toArray()));
         assertFalse(passwords.isEmpty());
         List<String> columns = helper.getSaturnVaultColumns();
         assertTrue(columns.containsAll(expectedColumns));
@@ -46,6 +50,9 @@ public class TestListPasswords {
 	
 	@After
 	public void tearDown() throws Exception {
-		helper.tearDown();
+        if(helper.isElementPresent(By.cssSelector("#site-" + siteName))){
+			helper.deleteSaturnVaultAccount(siteName, false);
+		}
+        helper.tearDown();
 	}
 }

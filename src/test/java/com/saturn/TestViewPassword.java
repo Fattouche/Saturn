@@ -16,26 +16,27 @@ import static org.junit.Assert.*;
 
 public class TestViewPassword {
 	private TestHelper helper;
-	public String siteName1;
-    public String siteName2;
     private List<String> expectedPasswords;
+    private String siteName;
 
 	@Before
 	public void setUp() throws Exception {
 		helper = new TestHelper();
-		helper.driver.get(helper.url);
+        helper.driver.get(helper.url);
+        siteName = "Site"+ RandomStringUtils.randomAlphanumeric(8);
+        helper.login();
+        helper.createSaturnVaultAccount(siteName);
     }
     
     //Test that we can see the specific details for a site
 	@Test
 	public void viewPasswordTest(){
-        helper.login();
 		List<List<String>> passwords = helper.listSaturnVaultAccounts();
         assertFalse(passwords.isEmpty());
         for(List<String> items: passwords){
             assertTrue(isInteger(items.get(0)));
             assertTrue(items.get(1).contains("Site"));
-            assertEquals(items.get(2), "juju");
+            assertEquals(items.get(2), helper.defaultLogin);
         }
     }
     
@@ -59,6 +60,9 @@ public class TestViewPassword {
 	
 	@After
 	public void tearDown() throws Exception {
-		helper.tearDown();
+		if(helper.isElementPresent(By.cssSelector("#site-" + siteName))){
+			helper.deleteSaturnVaultAccount(siteName, false);
+		}
+        helper.tearDown();
 	}
 }
