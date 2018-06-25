@@ -4,6 +4,7 @@ import java.io.File;
 import java.net.URL;
 import java.util.concurrent.TimeUnit;
 
+import org.openqa.selenium.*;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
@@ -17,6 +18,8 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+
+import java.util.*;
 
 public class TestHelper {
 	public WebDriver driver;
@@ -93,6 +96,34 @@ public class TestHelper {
 
 	}
 
+	public List<List<String>> listSaturnVaultAccounts(){
+		driver.get(url+"/#/saturn-vault");
+		WebElement tablePasswords = driver.findElement(By.cssSelector(".table-responsive .jh-table.table.table-striped tbody"));
+		List<WebElement> passwords = tablePasswords.findElements(By.tagName("tr"));
+		List<List<String>> stringPasswords = new ArrayList<List<String>>();
+		for(WebElement password: passwords){
+			List<WebElement> columns=password.findElements(By.tagName("td"));
+			List<String> item = new ArrayList<String>();
+			for(WebElement column : columns)
+            {
+				item.add(column.getText());
+			}
+			stringPasswords.add(item);
+		}
+		return stringPasswords;
+	}
+
+	public List<String> getSaturnVaultColumns(){
+		driver.get(url+"/#/saturn-vault");
+		WebElement tablePasswords = driver.findElement(By.cssSelector(".table-responsive .jh-table.table.table-striped thead"));
+		List<WebElement> columnNames = tablePasswords.findElements(By.tagName("th"));
+		List<String> names = new ArrayList<String>();
+		for(WebElement name: columnNames){
+			names.add(name.getText());
+		}
+		return names;
+	}
+
 	public void tearDown() throws Exception {
 		this.driver.quit();
 	}
@@ -101,10 +132,12 @@ public class TestHelper {
 		try {
 			driver.findElement(by);
 			return true;
-		} catch (NoSuchElementException e) {
+		} catch (org.openqa.selenium.NoSuchElementException e) {
 			return false;
 		}
 	}
+
+	
 
 	private void setDriver(String driverName) {
 		driverName = driverName.toLowerCase();
