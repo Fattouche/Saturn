@@ -69,7 +69,7 @@ public class TestHelper {
 		driver.findElement(By.cssSelector("form[name='editForm']")).submit();
 
 		// wait for the submission to finish
-		new WebDriverWait(driver, 10).until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector("form[name='editForm']")));
+		new WebDriverWait(driver, 3).until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector("form[name='editForm']")));
 	}
 
 	public void deleteSaturnVaultAccount(String siteName, boolean cancel){

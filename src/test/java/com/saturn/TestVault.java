@@ -89,9 +89,9 @@ public class TestVault {
 	}
 	
 	@After
-	public void tearDown() throws Exception {String 
+	public void tearDown() throws Exception {
 		if(helper.isElementPresent(By.cssSelector("#site-" + siteName))){
-=			helper.deleteSaturnVaultAccount(siteName, false);
+			helper.deleteSaturnVaultAccount(siteName, false);
 		}
 		helper.tearDown();
 	}
