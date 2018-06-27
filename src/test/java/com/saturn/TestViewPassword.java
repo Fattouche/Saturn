@@ -33,11 +33,15 @@ public class TestViewPassword {
 	public void viewPasswordTest(){
 		List<List<String>> passwords = helper.listSaturnVaultAccounts();
         assertFalse(passwords.isEmpty());
+        boolean found = false;
         for(List<String> items: passwords){
             assertTrue(isInteger(items.get(0)));
             assertTrue(items.get(1).contains("Site"));
-            assertEquals(items.get(2), helper.defaultLogin);
+            if(items.get(2).equals(helper.defaultLogin)){
+                found=true;
+            }
         }
+        assertTrue(found);
     }
     
     public static boolean isInteger(String s) {
