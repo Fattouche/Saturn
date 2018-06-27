@@ -17,6 +17,7 @@ import org.openqa.selenium.OutputType;
 import java.io.File;
 import java.util.*;
 import static org.junit.Assert.*;
+import java.lang.Integer;
 
 public class TestSortPasswords {
     private TestHelper helper;
@@ -25,93 +26,110 @@ public class TestSortPasswords {
     String[] logins = { "Alogin", "Blogin", "Clogin", "Dlogin" };
     String[] passwords = { "Apassword", "Bpassword", "Cpassword", "Dpassword" };
     private int num_accounts = sites.length;
+    private boolean first_test = true;
+    private boolean last_test = false;;
 
     private String siteName;
     private List<List<String>> existingAccounts;
 
-    @BeforeClass
+    @Before
     public void setUp() throws Exception {
-        helper = new TestHelper();
-        helper.driver.get(helper.url);
+        if (first_test) {
+            helper = new TestHelper();
+            helper.driver.get(helper.url);
 
-        helper.login();
+            helper.login();
 
-        existingAccounts = helper.listSaturnVaultAccounts(false);
+            existingAccounts = helper.listSaturnVaultAccounts(false);
 
-        // delete all existing saturn vaults
-        for (List<String> temp : existingAccounts) {
-            helper.deleteSaturnVaultAccount(temp.get(1), false);
+            // delete all existing saturn vaults
+            for (List<String> temp : existingAccounts) {
+                helper.deleteSaturnVaultAccount(temp.get(1), false);
+            }
+
+            // Create saturn vaults
+            // int len = sites.length;
+            for (int i = 0; i < num_accounts; i++) {
+                helper.createSaturnVaultAccountNotUsingDefault(sites[i], logins[i], passwords[num_accounts - 1 - i]);
+            }
+            first_test = false;
         }
 
-        // Create saturn vaults
-        // int len = sites.length;
-        for (int i = 0; i < num_accounts; i++) {
-            helper.createSaturnVaultAccountNotUsingDefault(sites[i], logins[i], passwords[num_accounts - 1 - i]);
-        }
     }
 
     @Test
     public void sortPasswordAccountsByID() throws Exception {
+        last_test = true;
+        By id_sort = By.cssSelector("#id_sort");
+        assertTrue(helper.isElementPresent(id_sort));
 
-        // By site_sort = By.cssSelector("#site_sort");
-        // assertTrue(helper.isElementPresent(site_sort));
+        // helper.driver.findElement(id_sort).click();
 
-        // helper.driver.findElement(site_sort).click();
-        // helper.driver.findElement(site_sort).click();
+        existingAccounts = helper.listSaturnVaultAccounts(true);
 
-        // Thread.sleep(3000);
+        String first_id = "0";
+        String last_id = "0";
+        int len = existingAccounts.size();
+        for (int i = 0; i < len; i++) {
+            if (i == 0) {
+                first_id = (existingAccounts.get(i)).get(0);
+            }
+            if (i == len - 1) {
+                last_id = (existingAccounts.get(i)).get(0);
 
-        // // existingAccounts = helper.listSaturnVaultAccounts();
-
-        // WebElement tablePasswords = helper.driver
-        // .findElement(By.cssSelector(".table-responsive .jh-table.table.table-striped
-        // tbody"));
-        // List<WebElement> passwords = tablePasswords.findElements(By.tagName("tr"));
-        // List<List<String>> stringPasswords = new ArrayList<List<String>>();
-        // for (WebElement password : passwords) {
-        // List<WebElement> columns = password.findElements(By.tagName("td"));
-        // List<String> item = new ArrayList<String>();
-        // for (WebElement column : columns) {
-        // item.add(column.getText());
-        // }
-        // stringPasswords.add(item);
-        // }
-
-        // for (List<String> temp : stringPasswords) {
-        // System.out.println(temp);
-        // }
-
-    }
-
-    @Test
-    public void SortPasswordAccountsBySites() throws Exception {
-    }
-
-    @Test
-    public void SortPasswordAccountsByLogin() throws Exception {
-    }
-
-    @Test
-    public void SortPasswordAccountsByPassword() throws Exception {
-    }
-
-    @Test
-    public void SortPasswordAccountsByDateCreated() throws Exception {
-    }
-
-    @Test
-    public void SortPasswordAccountsByDateModified() throws Exception {
-    }
-
-    @AfterClass
-    public void tearDown() throws Exception {
-
-        // Delete all created Saturn Vaults
-        for (int i = 0; i < num_accounts; i++) {
-            if (helper.isElementPresent(By.cssSelector("#site-" + sites[i]))) {
-                helper.deleteSaturnVaultAccount(sites[i], false);
             }
         }
-        helper.tearDown();
+
+        assertTrue(Integer.parseInt(first_id) < Integer.parseInt(last_id));
+        helper.driver.findElement(id_sort).click();
+
+        existingAccounts = helper.listSaturnVaultAccounts(true);
+
+        len = existingAccounts.size();
+        for (int i = 0; i < len; i++) {
+            if (i == 0) {
+                first_id = (existingAccounts.get(i)).get(0);
+            }
+            if (i == len - 1) {
+                last_id = (existingAccounts.get(i)).get(0);
+
+            }
+        }
+
+        assertTrue(Integer.parseInt(first_id) > Integer.parseInt(last_id));
+
+    }
+
+    // @Test
+    // public void SortPasswordAccountsBySites() throws Exception {
+    // }
+
+    // @Test
+    // public void SortPasswordAccountsByLogin() throws Exception {
+    // }
+
+    // @Test
+    // public void SortPasswordAccountsByPassword() throws Exception {
+    // }
+
+    // @Test
+    // public void SortPasswordAccountsByDateCreated() throws Exception {
+    // }
+
+    // @Test
+    // public void SortPasswordAccountsByDateModified() throws Exception {
+    // }
+
+    @After
+    public void tearDown() throws Exception {
+        if (last_test) {
+            // Delete all created Saturn Vaults
+            for (int i = 0; i < num_accounts; i++) {
+                if (helper.isElementPresent(By.cssSelector("#site-" + sites[i]))) {
+                    helper.deleteSaturnVaultAccount(sites[i], false);
+                }
+            }
+            helper.tearDown();
+        }
     }
 }
