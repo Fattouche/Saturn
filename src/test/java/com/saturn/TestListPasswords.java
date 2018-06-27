@@ -12,33 +12,33 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import java.util.*;
 import static org.junit.Assert.*;
 
-
 public class TestListPasswords {
     private TestHelper helper;
     private List<String> expectedColumns;
     private String siteName;
 
-	@Before
-	public void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         helper = new TestHelper();
         initExpectedColumns();
         helper.driver.get(helper.url);
-        siteName = "Site"+ RandomStringUtils.randomAlphanumeric(8);
+        siteName = "Site" + RandomStringUtils.randomAlphanumeric(8);
         helper.login();
         helper.createSaturnVaultAccount(siteName);
     }
-    
-    //List all saturn vault passwords/accounts and test that we can see the expected columns
-	@Test
-	public void listPasswordsTest(){
-        List<List<String>> passwords = helper.listSaturnVaultAccounts();
+
+    // List all saturn vault passwords/accounts and test that we can see the
+    // expected columns
+    @Test
+    public void listPasswordsTest() {
+        List<List<String>> passwords = helper.listSaturnVaultAccounts(false);
         System.out.println(Arrays.toString(passwords.toArray()));
         assertFalse(passwords.isEmpty());
         List<String> columns = helper.getSaturnVaultColumns();
         assertTrue(columns.containsAll(expectedColumns));
     }
-    
-    private void initExpectedColumns(){
+
+    private void initExpectedColumns() {
         expectedColumns = new ArrayList<String>();
         expectedColumns.add("ID");
         expectedColumns.add("Site");
@@ -47,12 +47,12 @@ public class TestListPasswords {
         expectedColumns.add("Created Date");
         expectedColumns.add("Last Modified Date");
     }
-	
-	@After
-	public void tearDown() throws Exception {
-        if(helper.isElementPresent(By.cssSelector("#site-" + siteName))){
-			helper.deleteSaturnVaultAccount(siteName, false);
-		}
+
+    @After
+    public void tearDown() throws Exception {
+        if (helper.isElementPresent(By.cssSelector("#site-" + siteName))) {
+            helper.deleteSaturnVaultAccount(siteName, false);
+        }
         helper.tearDown();
-	}
+    }
 }

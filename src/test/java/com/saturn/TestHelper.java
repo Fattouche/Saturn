@@ -40,7 +40,7 @@ public class TestHelper {
 		if (url == null) {
 			url = "http://saturn:8080";
 		}
-        System.out.println("Driver Name: " + driverName + "\nUrl: " + url);
+		System.out.println("Driver Name: " + driverName + "\nUrl: " + url);
 		setDriver(driverName);
 	}
 
@@ -48,7 +48,7 @@ public class TestHelper {
 		login(validUsername, validPassword);
 	}
 
-	public void login(String username, String password){
+	public void login(String username, String password) {
 		driver.get(url);
 		driver.findElement(By.id("login")).click();
 		driver.findElement(By.id("username")).sendKeys(username);
@@ -57,13 +57,16 @@ public class TestHelper {
 		driver.findElement(By.id("password")).submit();
 	}
 
-	public void createSaturnVaultAccount(String siteName){
+	public void createSaturnVaultAccount(String siteName) {
 		createSaturnVaultAccount(siteName, defaultLogin, defaultPass);
 	}
 
-	public void createSaturnVaultAccount(String siteName, String login, String password){
-		driver.get(url+"/#/saturn-vault/new");
+	public void createSaturnVaultAccountNotUsingDefault(String siteName, String login, String password) {
+		createSaturnVaultAccount(siteName, login, password);
+	}
 
+	public void createSaturnVaultAccount(String siteName, String login, String password) {
+		driver.get(url + "/#/saturn-vault/new");
 
 		driver.findElement(By.id("field_site")).sendKeys(siteName);
 		driver.findElement(By.id("field_login")).sendKeys(login);
@@ -72,15 +75,16 @@ public class TestHelper {
 		driver.findElement(By.cssSelector("form[name='editForm']")).submit();
 
 		// wait for the submission to finish
-		new WebDriverWait(driver, 3).until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector("form[name='editForm']")));
+		new WebDriverWait(driver, 3)
+				.until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector("form[name='editForm']")));
 	}
-	
-	public void deleteSaturnVaultAccount(String siteName, boolean cancel){
+
+	public void deleteSaturnVaultAccount(String siteName, boolean cancel) {
 		closeForm("editForm");
 		closeForm("deleteForm");
-		
+
 		driver.findElement(By.cssSelector("#site-" + siteName + " .delete-vault")).click();
-		if(!cancel){
+		if (!cancel) {
 			driver.findElement(By.cssSelector("form[name=deleteForm] .delete-button")).click();
 		} else {
 			driver.findElement(By.cssSelector("form[name=deleteForm] .cancel-button")).click();
@@ -88,24 +92,27 @@ public class TestHelper {
 
 	}
 
-	public void closeForm(String name){
-		if(isElementPresent(By.cssSelector("form[name='"+name+"']"))){
-			driver.findElement(By.cssSelector("form[name='"+name+"'] .cancel-button")).click();
-			new WebDriverWait(driver, 3).until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector("form[name='"+name+"']")));
+	public void closeForm(String name) {
+		if (isElementPresent(By.cssSelector("form[name='" + name + "']"))) {
+			driver.findElement(By.cssSelector("form[name='" + name + "'] .cancel-button")).click();
+			new WebDriverWait(driver, 3).until(
+					ExpectedConditions.invisibilityOfElementLocated(By.cssSelector("form[name='" + name + "']")));
 		}
 
 	}
 
-	public List<List<String>> listSaturnVaultAccounts(){
-		driver.get(url+"/#/saturn-vault");
-		WebElement tablePasswords = driver.findElement(By.cssSelector(".table-responsive .jh-table.table.table-striped tbody"));
+	public List<List<String>> listSaturnVaultAccounts(boolean onPage) {
+		if (!onPage) {
+			driver.get(url + "/#/saturn-vault");
+		}
+		WebElement tablePasswords = driver
+				.findElement(By.cssSelector(".table-responsive .jh-table.table.table-striped tbody"));
 		List<WebElement> passwords = tablePasswords.findElements(By.tagName("tr"));
 		List<List<String>> stringPasswords = new ArrayList<List<String>>();
-		for(WebElement password: passwords){
-			List<WebElement> columns=password.findElements(By.tagName("td"));
+		for (WebElement password : passwords) {
+			List<WebElement> columns = password.findElements(By.tagName("td"));
 			List<String> item = new ArrayList<String>();
-			for(WebElement column : columns)
-            {
+			for (WebElement column : columns) {
 				item.add(column.getText());
 			}
 			stringPasswords.add(item);
@@ -113,12 +120,13 @@ public class TestHelper {
 		return stringPasswords;
 	}
 
-	public List<String> getSaturnVaultColumns(){
-		driver.get(url+"/#/saturn-vault");
-		WebElement tablePasswords = driver.findElement(By.cssSelector(".table-responsive .jh-table.table.table-striped thead"));
+	public List<String> getSaturnVaultColumns() {
+		driver.get(url + "/#/saturn-vault");
+		WebElement tablePasswords = driver
+				.findElement(By.cssSelector(".table-responsive .jh-table.table.table-striped thead"));
 		List<WebElement> columnNames = tablePasswords.findElements(By.tagName("th"));
 		List<String> names = new ArrayList<String>();
-		for(WebElement name: columnNames){
+		for (WebElement name : columnNames) {
 			names.add(name.getText());
 		}
 		return names;
@@ -137,46 +145,44 @@ public class TestHelper {
 		}
 	}
 
-	
-
 	private void setDriver(String driverName) {
 		driverName = driverName.toLowerCase();
 
 		long timeout = 5;
 
 		switch (driverName) {
-			case "firefox":
-				System.setProperty("webdriver.gecko.driver", "/opt/dgsdfgsdgdsgsdf");
-				driver = new FirefoxDriver(new FirefoxBinary(new File("/usr/bin/firefox-esr")), new FirefoxProfile());
-				driver.manage().window().maximize();
-				break;
-			case "chrome":
-				ChromeOptions options = new ChromeOptions();
-				options.addArguments("--start-maximized");
-				driver = new ChromeDriver(options);
-				break;
-			case "remote":
-				DesiredCapabilities capabilities = new DesiredCapabilities();
-				capabilities.setBrowserName("firefox");
+		case "firefox":
+			System.setProperty("webdriver.gecko.driver", "/opt/dgsdfgsdgdsgsdf");
+			driver = new FirefoxDriver(new FirefoxBinary(new File("/usr/bin/firefox-esr")), new FirefoxProfile());
+			driver.manage().window().maximize();
+			break;
+		case "chrome":
+			ChromeOptions options = new ChromeOptions();
+			options.addArguments("--start-maximized");
+			driver = new ChromeDriver(options);
+			break;
+		case "remote":
+			DesiredCapabilities capabilities = new DesiredCapabilities();
+			capabilities.setBrowserName("firefox");
 
-				String remoteUrlString = System.getenv("SELENIUM_URL");
-				if (remoteUrlString == null) {
-					remoteUrlString = "http://selenium:4444/wd/hub";
-				}
+			String remoteUrlString = System.getenv("SELENIUM_URL");
+			if (remoteUrlString == null) {
+				remoteUrlString = "http://selenium:4444/wd/hub";
+			}
 
-				URL remoteUrl;
-				try {
-					remoteUrl = new URL(remoteUrlString);
-				} catch (Exception e) {
-					return; // This is bad but w/e hopefully the url is valid
-				}
+			URL remoteUrl;
+			try {
+				remoteUrl = new URL(remoteUrlString);
+			} catch (Exception e) {
+				return; // This is bad but w/e hopefully the url is valid
+			}
 
-				driver = new RemoteWebDriver(remoteUrl, capabilities);
-				break;
-			default:
-				driver = new HtmlUnitDriver();
-				((HtmlUnitDriver) driver).setJavascriptEnabled(true);
-				timeout = 20; // HtmlUnitDriver is slower than Firefox and Chrome
+			driver = new RemoteWebDriver(remoteUrl, capabilities);
+			break;
+		default:
+			driver = new HtmlUnitDriver();
+			((HtmlUnitDriver) driver).setJavascriptEnabled(true);
+			timeout = 20; // HtmlUnitDriver is slower than Firefox and Chrome
 		}
 
 		driver.manage().timeouts().implicitlyWait(timeout, TimeUnit.SECONDS);
