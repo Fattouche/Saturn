@@ -28,12 +28,16 @@ public class TestListPasswords {
         helper.createSaturnVaultAccount(siteName);
     }
     
-    //List all saturn vault passwords/accounts and test that we can see the expected columns
+    //List all saturn vault passwords/accounts and test that it isn't empty after we made an account
 	@Test
 	public void listPasswordsTest(){
         List<List<String>> passwords = helper.listSaturnVaultAccounts();
-        System.out.println(Arrays.toString(passwords.toArray()));
         assertFalse(passwords.isEmpty());
+    }
+
+    //Test that all of the expected columns are shown to the user
+    @Test
+    public void checkColumnsTest(){
         List<String> columns = helper.getSaturnVaultColumns();
         assertTrue(columns.containsAll(expectedColumns));
     }

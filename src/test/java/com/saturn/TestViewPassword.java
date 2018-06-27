@@ -36,8 +36,8 @@ public class TestViewPassword {
         boolean found = false;
         for(List<String> items: passwords){
             assertTrue(isInteger(items.get(0)));
-            assertTrue(items.get(1).contains("Site"));
             if(items.get(2).equals(helper.defaultLogin)){
+                assertTrue(items.get(1).contains("Site"));
                 found=true;
             }
         }
