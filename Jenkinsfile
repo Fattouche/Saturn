@@ -19,12 +19,12 @@ pipeline {
                 sh 'mkdir -p dist/config'
                 sh 'mkdir -p dist/mediaResources'
                 sh 'cp src/main/resources/config/application-dev-jenkins.yml dist/config/application-dev.yml'
-                sh 'java -jar dist/saturn-1.0.4.war &'
+                sh 'java -jar dist/saturn-1.0.4.war 2> errorOutput.log > output.log &'
                 sh 'sleep 30'
                 sh 'cat output.log'
                 sh 'cat errorOutput.log'
 				sh 'mvn -Dtest=TestVault test'
-
+                
             }
         }
     }
