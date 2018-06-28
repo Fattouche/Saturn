@@ -50,6 +50,9 @@ public class TestHelper {
 
 	public void login(String username, String password){
 		driver.get(url);
+
+		new WebDriverWait(driver, 10).until(ExpectedConditions.visibilityOfElementLocated(By.id("login")));
+
 		driver.findElement(By.id("login")).click();
 		driver.findElement(By.id("username")).sendKeys(username);
 		driver.findElement(By.id("password")).sendKeys(password);
@@ -104,8 +107,7 @@ public class TestHelper {
 		for(WebElement password: passwords){
 			List<WebElement> columns=password.findElements(By.tagName("td"));
 			List<String> item = new ArrayList<String>();
-			for(WebElement column : columns)
-            {
+			for(WebElement column : columns) {
 				item.add(column.getText());
 			}
 			stringPasswords.add(item);
