@@ -72,7 +72,7 @@ To run the distribution packaged application:
 1. Start the saturn server
 2. set the driver export variables
     1. export SATURN_DRIVER=chrome
-    2. export SATURN_URL="http://localhost:8080  
+    2. export SATURN_URL=http://localhost:8080  
 3. run mvn  -Dtest=TestSelenium test
 
 
