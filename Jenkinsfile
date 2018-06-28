@@ -25,7 +25,7 @@ pipeline {
                 sh 'sleep 30'
                 sh 'cat output.log'
                 sh 'cat errorOutput.log'
-                sh 'git reset --hard master'
+                sh 'git reset --hard HEAD'
 				sh 'mvn -Dtest=TestVault test'
                 
             }
