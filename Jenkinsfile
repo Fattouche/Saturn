@@ -4,7 +4,7 @@ pipeline {
     
     environment {
         SATURN_DRIVER = 'asdasd'
-        SATURN_URL    = 'http://localhost:8008'
+        SATURN_URL    = 'http://142.104.90.101:8008'
     }
     
 
@@ -19,9 +19,11 @@ pipeline {
                 sh 'mkdir -p dist/config'
                 sh 'mkdir -p dist/mediaResources'
                 sh 'cp src/main/resources/config/application-dev-jenkins.yml dist/config/application-dev.yml'
-                sh 'java -jar dist/saturn-1.0.4.war &'
+                sh 'java -jar dist/saturn-1.0.4.war 2> errorOutput.log > output.log &'
                 sh 'sleep 30'
 				sh 'mvn -Dtest=TestVault test'
+                sh 'cat output.log'
+                sh 'cat errorOutput.log'
             }
         }
     }
