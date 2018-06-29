@@ -11,5 +11,5 @@ RUN mvn package
 FROM openjdk:8-jdk-alpine
 COPY --from=0 target/saturn-1.0.4.war /home/saturn-1.0.4.war
 WORKDIR /saturn
+COPY wait-for.sh .
 EXPOSE 8080
-CMD ["java", "-jar", "/home/saturn-1.0.4.war"]
