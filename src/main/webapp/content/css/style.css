@@ -1204,3 +1204,12 @@ a.scrollup:hover{
 	width: 100%;
 	height: 100%;
 }
+
+#strengthBar{
+  height: 20px;
+  border-radius: 10px;
+}
+
+#strengthBar .point{
+  flex-grow: 1;
+}

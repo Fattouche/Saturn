@@ -12,8 +12,8 @@
 			restrict: 'E',
 			template: '<div id="strength">' +
 				'<small>Password strength:</small>' +
-				'<ul id="strengthBar">' +
-				'<li class="point"></li><li class="point"></li><li class="point"></li><li class="point"></li><li class="point"></li>' +
+				'<div id="strengthBar" style="display:flex">' +
+				'<div class="point"></div><div class="point"></div><div class="point"></div><div class="point"></div><div class="point"></div>' +
 				'</ul>' +
 				'</div>',
 			scope: {
@@ -23,6 +23,7 @@
 		};
 
 		return directive;
+
 
 		/* private helper methods*/
 
@@ -77,17 +78,17 @@
 						idx = 4;
 					}
 
-					return {idx: idx + 1, col: this.colors[idx]};
+					return { idx: idx + 1, col: this.colors[idx] };
 				}
 			};
 			scope.$watch('passwordToCheck', function (password) {
 				if (password) {
 					var c = strength.getColor(strength.mesureStrength(password));
 					iElement.removeClass('ng-hide');
-					iElement.find('ul').children('li')
-						.css({'background-color': '#DDD'})
+					iElement.find('div').children('div')
+						.css({ 'background-color': '#DDD' })
 						.slice(0, c.idx)
-						.css({'background-color': c.col});
+						.css({ 'background-color': c.col });
 				}
 			});
 		}
