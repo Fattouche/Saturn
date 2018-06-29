@@ -15,46 +15,30 @@ import static org.junit.Assert.*;
 
 public class TestListPasswords {
     private static TestHelper helper;
-    private static List<String> expectedColumns;
-    private static String siteName;
+    private static int numAccounts = 10;
 
 	@BeforeClass
 	public static void setUp() throws Exception {
         helper = new TestHelper();
-        initExpectedColumns();
         helper.driver.get(helper.url);
-        siteName = "Site"+ RandomStringUtils.randomAlphanumeric(8);
         helper.login();
-        helper.createSaturnVaultAccount(siteName);
     }
     
     //List all saturn vault passwords/accounts and test that it isn't empty after we made an account
 	@Test
 	public void listPasswordsTest(){
+        helper.createAccounts(numAccounts);
         List<List<String>> passwords = helper.listSaturnVaultAccounts();
-        assertFalse(passwords.isEmpty());
-    }
-
-    //Test that all of the expected columns are shown to the user
-    @Test
-    public void checkColumnsTest(){
-        List<String> columns = helper.getSaturnVaultColumns();
-        assertTrue(columns.containsAll(expectedColumns));
-    }
-    
-    private static void initExpectedColumns(){
-        expectedColumns = new ArrayList<String>();
-        expectedColumns.add("ID");
-        expectedColumns.add("Site");
-        expectedColumns.add("Login");
-        expectedColumns.add("Password");
-        expectedColumns.add("Created Date");
-        expectedColumns.add("Last Modified Date");
+        assertEquals(passwords.size(), numAccounts);
+        for(int i=0;i<passwords.size();i++){
+            assertEquals(passwords.get(i).get(1), "Site"+i);
+        }
     }
 	
 	@AfterClass
 	public static void tearDown() throws Exception {
-        if(helper.isElementPresent(By.cssSelector("#site-" + siteName))){
+        for(int i=0;i<numAccounts;i++){
+            String siteName = "Site"+i;
 			helper.deleteSaturnVaultAccount(siteName, false);
 		}
         helper.tearDown();

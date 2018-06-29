@@ -91,6 +91,24 @@ public class TestHelper {
 
 	}
 
+	public void createAccounts(int numberOfAccounts){
+		for(int i=0;i<numberOfAccounts;i++){
+			String siteName = "Site"+ i;
+			createSaturnVaultAccount(siteName);
+		}
+	}
+
+	public List<String> expectedColumns(){
+        List<String> expectedColumns = new ArrayList<String>();
+        expectedColumns.add("ID");
+        expectedColumns.add("Site");
+        expectedColumns.add("Login");
+        expectedColumns.add("Password");
+        expectedColumns.add("Created Date");
+		expectedColumns.add("Last Modified Date");
+		return expectedColumns;
+    }
+
 	public void closeForm(String name){
 		if(isElementPresent(By.cssSelector("form[name='"+name+"']"))){
 			driver.findElement(By.cssSelector("form[name='"+name+"'] .cancel-button")).click();

@@ -43,6 +43,13 @@ public class TestViewPassword {
         }
         assertTrue(found);
     }
+
+    //Test that all of the expected columns are shown to the user
+    @Test
+    public void checkColumnsTest(){
+        List<String> columns = helper.getSaturnVaultColumns();
+        assertTrue(columns.containsAll(helper.expectedColumns()));
+    }
     
     public static boolean isInteger(String s) {
         boolean isValidInteger = false;
