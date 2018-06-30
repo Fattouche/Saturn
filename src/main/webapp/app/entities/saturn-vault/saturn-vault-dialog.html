@@ -38,7 +38,7 @@
                 <div>
                     <input type="{{vm.saturnPass.show ? 'text' : 'password'}}" class="form-control" name="password" id="field_password" ng-model="vm.saturnPass.password"
                         required />
-                    <span class="glyphicon glyphicon-eye-open" style="float:right; cursor: pointer; margin: -23px 16px 0px 0;" ng-click="vm.saturnPass.show = !vm.saturnPass.show"></span>
+                    <span class="glyphicon glyphicon-eye-open toggle-password-visible" style="float:right; cursor: pointer; margin: -23px 16px 0px 0;" ng-click="vm.saturnPass.show = !vm.saturnPass.show"></span>
                 </div>
                 <div ng-show="editForm.password.$invalid">
                     <p class="help-block" ng-show="editForm.password.$error.required">
