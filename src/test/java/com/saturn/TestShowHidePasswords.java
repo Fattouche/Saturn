@@ -2,7 +2,9 @@ package com.saturn;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -18,17 +20,18 @@ import java.io.File;
 import java.util.concurrent.TimeUnit;
 import java.net.URL;
 import java.util.Map;
+import java.util.List;
 
 import com.saturn.TestDeleteAccount;
 
 import static org.junit.Assert.*;	
   
 public class TestShowHidePasswords {
-	private TestHelper helper;
-	public String siteName;
+	private static TestHelper helper;
+	public static String siteName;
 
-  @Before
-	public void setUp() throws Exception {
+  @BeforeClass
+	public static void setUp() throws Exception {
 		helper = new TestHelper();
 		helper.driver.get(helper.url);
 		siteName = "CoolSite" + RandomStringUtils.randomAlphanumeric(8);
@@ -41,7 +44,7 @@ public class TestShowHidePasswords {
 	}
 
   @Test
-	public void showThenHidePassword() {
+	public void togglePasswordInList() {
 		// Assert that no saturnpass-password elements exist that are showing plaintext
 		assertFalse(helper.isElementPresent(By.cssSelector("input[type=text].saturnpass-password")));
 
@@ -57,12 +60,79 @@ public class TestShowHidePasswords {
     
 		helper.driver.findElement(By.cssSelector("#site-" + siteName + " .toggle-password-visible")).click();
 
-  // Assert that password is hidden again
+  	// Assert that password is hidden again
 		assertFalse(helper.isElementPresent(By.cssSelector("input[type=text].saturnpass-password")));
 	}
 
-  @After
-	public void tearDown() throws Exception {
+	@Test
+	public void togglePasswordInCreation() {
+		helper.driver.get(helper.url+"/#/saturn-vault/new");
+
+		// Fill in password
+		helper.driver.findElement(By.id("field_password")).sendKeys("test_password");
+
+		// Assert that password element is not shown in plaintext
+		assertFalse(helper.isElementPresent(By.cssSelector("input[type=text]#field_password")));
+
+		// Click the button to view the password
+		helper.driver.findElement(By.cssSelector(".clearfix .toggle-password-visible")).click();
+
+		// Assert that password now shows in plaintext
+		assertTrue(helper.isElementPresent(By.cssSelector("input[type=text]#field_password")));
+
+		helper.driver.findElement(By.cssSelector(".clearfix .toggle-password-visible")).click();
+
+  	// Assert that password is hidden again
+		assertFalse(helper.isElementPresent(By.cssSelector("input[type=text]#field_password")));
+	}
+
+	@Test
+	public void togglePasswordInEdit() {
+		List<List<String>> passwords = helper.listSaturnVaultAccounts();
+
+		// Get an ID of a password account, so that we can edit it
+		String someAccountId = passwords.get(0).get(0);
+
+		helper.driver.get(helper.url+"/#/saturn-vault/" + someAccountId + "/edit");
+
+		// Fill in password
+		helper.driver.findElement(By.id("field_password")).sendKeys("test_password");
+
+		// Assert that password element is not shown in plaintext
+		assertFalse(helper.isElementPresent(By.cssSelector("input[type=text]#field_password")));
+
+		// Click the button to view the password
+		helper.driver.findElement(By.cssSelector(".clearfix .toggle-password-visible")).click();
+
+		// Assert that password now shows in plaintext
+		assertTrue(helper.isElementPresent(By.cssSelector("input[type=text]#field_password")));
+
+		helper.driver.findElement(By.cssSelector(".clearfix .toggle-password-visible")).click();
+
+  	// Assert that password is hidden again
+		assertFalse(helper.isElementPresent(By.cssSelector("input[type=text]#field_password")));
+	}
+
+	@Test
+	public void visibilityReset() {
+		helper.driver.get(helper.url+"/#/saturn-vault");
+
+		// Toggle visibility
+		helper.driver.findElement(By.cssSelector("#site-" + siteName + " .toggle-password-visible")).click();
+
+		// Assert that password now shows in plaintext
+		assertTrue(helper.isElementPresent(By.cssSelector("#site-" + siteName + " input[type=text].saturnpass-password")));
+
+		// Refresh page
+		helper.driver.get(helper.url+"/#/saturn-vault");
+
+		// Assert that password is hidden again
+		assertTrue(helper.isElementPresent(By.cssSelector("#site-" + siteName + " input[type=password].saturnpass-password")));
+		assertFalse(helper.isElementPresent(By.cssSelector("#site-" + siteName + " input[type=text].saturnpass-password")));
+	}
+
+  @AfterClass
+	public static void tearDown() throws Exception {
 		if(helper.isElementPresent(By.cssSelector("#site-" + siteName))){
 			helper.deleteSaturnVaultAccount(siteName, false);
 		}
