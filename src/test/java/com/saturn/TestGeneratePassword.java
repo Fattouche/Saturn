@@ -154,8 +154,8 @@ public class TestGeneratePassword {
     private void login() throws Exception {
 	    driver.get(url);
 	    driver.findElement(By.id("login")).click();
-	    driver.findElement(By.id("username")).sendKeys("test@email.com");
-	    driver.findElement(By.id("password")).sendKeys("1234");
+	    driver.findElement(By.id("username")).sendKeys("p.soell@saturn.com");
+	    driver.findElement(By.id("password")).sendKeys("stickman123");
 	    driver.findElement(By.id("password")).submit();
     }
 
