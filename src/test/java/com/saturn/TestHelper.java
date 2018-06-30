@@ -1,8 +1,11 @@
 package com.saturn;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
+import java.lang.InterruptedException;
 import java.util.concurrent.TimeUnit;
+import org.apache.commons.io.FileUtils;
 
 import org.openqa.selenium.*;
 import org.openqa.selenium.By;
@@ -40,7 +43,7 @@ public class TestHelper {
 		if (url == null) {
 			url = "http://saturn:8080";
 		}
-        System.out.println("Driver Name: " + driverName + "\nUrl: " + url);
+    System.out.println("Driver Name: " + driverName + "\nUrl: " + url);
 		setDriver(driverName);
 	}
 
@@ -49,15 +52,20 @@ public class TestHelper {
 	}
 
 	public void login(String username, String password){
-		driver.get(url);
+		driver.get(url);			
 
-		new WebDriverWait(driver, 10).until(ExpectedConditions.visibilityOfElementLocated(By.id("login")));
+		// Wait until nav bar loads
+		new WebDriverWait(driver, 3).until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(".menu")));
 
-		driver.findElement(By.id("login")).click();
-		driver.findElement(By.id("username")).sendKeys(username);
-		driver.findElement(By.id("password")).sendKeys(password);
+		// If login isn't there, assume already logged in
+		if (isElementPresent(By.id("login")))
+		{
+			driver.findElement(By.id("login")).click();
+			driver.findElement(By.id("username")).sendKeys(username);
+			driver.findElement(By.id("password")).sendKeys(password);
 
-		driver.findElement(By.id("password")).submit();
+			driver.findElement(By.id("password")).submit();
+		}
 	}
 
 	public void createSaturnVaultAccount(String siteName){
