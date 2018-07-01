@@ -88,7 +88,8 @@ public class TestGeneratePassword {
         helper.driver.findElement(By.id("field_length")).clear();
         helper.driver.findElement(By.id("field_length")).sendKeys("10");    //Setting Given Lenght to 10 charaters
         WebElement length_Field = helper.driver.findElement(By.id("field_length"));
-        helper.driver.findElement(By.id("field_repetition")).click();
+        confirm_click("field_repetition");
+
         helper.driver.findElement(By.cssSelector("button[ng-click=\"vm.generate()\"]")).click();
         wait.until(ExpectedConditions.attributeToBeNotEmpty(password_Field, "value"));
         validate_length(password_Field.getAttribute("value"),length_Field.getAttribute("value"));
@@ -164,6 +165,25 @@ public class TestGeneratePassword {
         validate_charaters("Special",password_Field.getAttribute("value"));
         wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//span[contains(@class, 'glyphicon-ban-circle')]")));
         helper.driver.findElement(By.xpath("//span[contains(@class, 'glyphicon-ban-circle')]")).click();  
+    }
+
+    @Test
+    public void password_regeneration() throws Exception{
+        wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//span[contains(@class, 'glyphicon-refresh')]")));
+        helper.driver.findElement(By.xpath("//span[contains(@class, 'glyphicon-refresh')]")).click();
+        wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("button[ng-click=\"vm.generate()\"]")));
+        helper.driver.findElement(By.cssSelector("button[ng-click=\"vm.generate()\"]")).click();
+        WebElement password_Field = helper.driver.findElement(By.id("field_password"));
+        wait.until(ExpectedConditions.attributeToBeNotEmpty(password_Field, "value"));
+        wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//span[contains(@class, 'glyphicon-ban-circle')]")));
+        helper.driver.findElement(By.xpath("//span[contains(@class, 'glyphicon-ban-circle')]")).click();
+
+        //Regenrate
+
+        wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//span[contains(@class, 'glyphicon-refresh')]")));
+        helper.driver.findElement(By.xpath("//span[contains(@class, 'glyphicon-refresh')]")).click();
+        wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("button[ng-click=\"vm.generate()\"]")));
+        helper.driver.findElement(By.cssSelector("button[ng-click=\"vm.generate()\"]")).click();
     }
 
     private void validate_length(String password,String length_in_string){
