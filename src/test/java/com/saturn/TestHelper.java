@@ -23,6 +23,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.*;
+import java.lang.*;
 
 public class TestHelper {
 	public WebDriver driver;
@@ -32,6 +33,7 @@ public class TestHelper {
 	public String validPassword = "pizzaman";
 	public String defaultLogin = "speaker";
 	public String defaultPass = "guitar";
+	public int timeout = 30;
 
 	public TestHelper() throws Exception {
 		String driverName = System.getenv("SATURN_DRIVER");
@@ -51,11 +53,8 @@ public class TestHelper {
 		login(validUsername, validPassword);
 	}
 
-	public void login(String username, String password) {
-		driver.get(url);
-
-		// Wait until nav bar loads
-		new WebDriverWait(driver, 3).until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(".menu")));
+	public void login(String username, String password){
+		getWithWait(url, ".menu");
 
 		// If login isn't there, assume already logged in
 		if (isElementPresent(By.id("login"))) {
@@ -75,8 +74,8 @@ public class TestHelper {
 		createSaturnVaultAccount(siteName, login, password);
 	}
 
-	public void createSaturnVaultAccount(String siteName, String login, String password) {
-		driver.get(url + "/#/saturn-vault/new");
+	public void createSaturnVaultAccount(String siteName, String login, String password){
+		getWithWait(url+"/#/saturn-vault/new", "#field_site");
 
 		driver.findElement(By.id("field_site")).sendKeys(siteName);
 		driver.findElement(By.id("field_login")).sendKeys(login);
@@ -85,8 +84,7 @@ public class TestHelper {
 		driver.findElement(By.cssSelector("form[name='editForm']")).submit();
 
 		// wait for the submission to finish
-		new WebDriverWait(driver, 3)
-				.until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector("form[name='editForm']")));
+		new WebDriverWait(driver, timeout).until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector("form[name='editForm']")));
 	}
 
 	public void deleteSaturnVaultAccount(String siteName, boolean cancel) {
@@ -120,21 +118,20 @@ public class TestHelper {
 		return expectedColumns;
 	}
 
-	public void closeForm(String name) {
-		if (isElementPresent(By.cssSelector("form[name='" + name + "']"))) {
-			driver.findElement(By.cssSelector("form[name='" + name + "'] .cancel-button")).click();
-			new WebDriverWait(driver, 3).until(
-					ExpectedConditions.invisibilityOfElementLocated(By.cssSelector("form[name='" + name + "']")));
+	public void closeForm(String name){
+		if(isElementPresent(By.cssSelector("form[name='"+name+"']"))){
+			driver.findElement(By.cssSelector("form[name='"+name+"'] .cancel-button")).click();
+
+			new WebDriverWait(driver, timeout).until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector("form[name='"+name+"']")));
 		}
 
 	}
 
-	public List<List<String>> listSaturnVaultAccounts(boolean onPage) {
-		if (!onPage) {
-			driver.get(url + "/#/saturn-vault");
+	public List<List<String>> listSaturnVaultAccounts(boolean skipRefresh){
+		if (!skipRefresh) {
+			getWithWait(url+"/#/saturn-vault", ".table-responsive");
 		}
-		WebElement tablePasswords = driver
-				.findElement(By.cssSelector(".table-responsive .jh-table.table.table-striped tbody"));
+		WebElement tablePasswords = driver.findElement(By.cssSelector(".table-responsive .jh-table.table.table-striped tbody"));
 		List<WebElement> passwords = tablePasswords.findElements(By.tagName("tr"));
 		List<List<String>> stringPasswords = new ArrayList<List<String>>();
 		for (WebElement password : passwords) {
@@ -148,10 +145,9 @@ public class TestHelper {
 		return stringPasswords;
 	}
 
-	public List<String> getSaturnVaultColumns() {
-		driver.get(url + "/#/saturn-vault");
-		WebElement tablePasswords = driver
-				.findElement(By.cssSelector(".table-responsive .jh-table.table.table-striped thead"));
+	public List<String> getSaturnVaultColumns(){
+		getWithWait(url+"/#/saturn-vault", ".table-responsive");
+		WebElement tablePasswords = driver.findElement(By.cssSelector(".table-responsive .jh-table.table.table-striped thead"));
 		List<WebElement> columnNames = tablePasswords.findElements(By.tagName("th"));
 		List<String> names = new ArrayList<String>();
 		for (WebElement name : columnNames) {
@@ -172,6 +168,19 @@ public class TestHelper {
 			return false;
 		}
 	}
+
+	public void getWithWait(String URL, String cssSelectorToWaitFor) {
+		if (driver.getCurrentUrl().equals(URL)) {
+			// A get() will not refresh if you are already at that URL
+			driver.navigate().refresh();
+		}
+		else {
+			driver.get(URL);
+		}
+		new WebDriverWait(driver, timeout).until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(cssSelectorToWaitFor)));
+	}
+
+	
 
 	private void setDriver(String driverName) {
 		driverName = driverName.toLowerCase();

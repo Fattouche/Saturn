@@ -66,7 +66,7 @@ public class TestPagination {
     assertFalse(helper.isElementPresent(By.cssSelector(".next.disabled")));
     assertTrue(helper.isElementPresent(By.cssSelector(".next")));
 
-    List<List<String>> secondPagePasswords = helper.listSaturnVaultAccounts();
+    List<List<String>> secondPagePasswords = helper.listSaturnVaultAccounts(false);
 
     // Assert that we now only see one password
     assertTrue(secondPagePasswords.size() == 1);
@@ -91,7 +91,7 @@ public class TestPagination {
 
     helper.driver.get(helper.url + "?page=1");
 
-    List<List<String>> firstPagePasswords = helper.listSaturnVaultAccounts();
+    List<List<String>> firstPagePasswords = helper.listSaturnVaultAccounts(false);
 
     assertTrue(firstPagePasswords.size() == 20);
   }
