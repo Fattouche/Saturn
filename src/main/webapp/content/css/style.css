@@ -44,17 +44,34 @@ a {
 a:hover {
 	text-decoration: none;
 	color:#eee;	
-	}
+}
 
-.btn-primary {
+a.btn {
+  color: #333;
+}
+
+.btn {
   padding: 8px 20px;
-  background: #be9e21;
-  color: #fff;
   border-radius: 4px;
   border:none;
   margin-top: 10px;
+  background: #dddddd;
 }
-	
+
+.btn-secondary:hover {
+  background: #c7c7c7;
+}
+
+.btn-primary {
+  background: #be9e21;
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background: #9c8218;
+  color: #fff;
+}
+
 .text-center h2 {
 	margin-bottom:30px;
 }
