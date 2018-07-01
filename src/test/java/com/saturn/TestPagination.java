@@ -107,11 +107,7 @@ public class TestPagination {
 
     helper.getWithWait(helper.url + "/#/saturn-vault?page=1", ".next");
 
-<<<<<<< a1466ee853514a0c89018ee3f1b02e40558380b2
-    List<List<String>> firstPagePasswords = helper.listSaturnVaultAccounts(false);
-=======
-    List<List<String>> firstPagePasswords = helper.listSaturnVaultAccountsOnPage(1);
->>>>>>> Get pagination unit tests working
+    List<List<String>> firstPagePasswords = helper.listSaturnVaultAccountsOnPage(1, false);
 
     assertTrue(firstPagePasswords.size() == accountsPerPage);
   }

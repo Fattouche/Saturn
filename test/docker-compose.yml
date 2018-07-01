@@ -16,7 +16,7 @@ services:
       - ..:/saturn
     networks:
       - saturn_default
-    command: ["mvn", "-e", "-Dtest=TestPagination*", "test"]
+    command: ["mvn", "-e", "-Dtest=Test*", "test"]
 
 networks:
   saturn_default:
