@@ -1,8 +1,8 @@
 package com.saturn;
 
 import org.apache.commons.lang3.RandomStringUtils;
-import org.junit.After;
-import org.junit.Before;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
@@ -13,44 +13,32 @@ import java.util.*;
 import static org.junit.Assert.*;
 
 public class TestListPasswords {
-    private TestHelper helper;
-    private List<String> expectedColumns;
-    private String siteName;
+    private static TestHelper helper;
+    private static int numAccounts = 10;
 
-    @Before
-    public void setUp() throws Exception {
+    @BeforeClass
+    public static void setUp() throws Exception {
         helper = new TestHelper();
-        initExpectedColumns();
         helper.driver.get(helper.url);
-        siteName = "Site" + RandomStringUtils.randomAlphanumeric(8);
         helper.login();
-        helper.createSaturnVaultAccount(siteName);
     }
 
-    // List all saturn vault passwords/accounts and test that we can see the
-    // expected columns
+    // List all saturn vault passwords/accounts and test that it isn't empty after
+    // we made an account
     @Test
     public void listPasswordsTest() {
+        helper.createAccounts(numAccounts);
         List<List<String>> passwords = helper.listSaturnVaultAccounts(false);
-        System.out.println(Arrays.toString(passwords.toArray()));
-        assertFalse(passwords.isEmpty());
-        List<String> columns = helper.getSaturnVaultColumns();
-        assertTrue(columns.containsAll(expectedColumns));
+        assertEquals(passwords.size(), numAccounts);
+        for (int i = 0; i < passwords.size(); i++) {
+            assertEquals(passwords.get(i).get(1), "Site" + i);
+        }
     }
 
-    private void initExpectedColumns() {
-        expectedColumns = new ArrayList<String>();
-        expectedColumns.add("ID");
-        expectedColumns.add("Site");
-        expectedColumns.add("Login");
-        expectedColumns.add("Password");
-        expectedColumns.add("Created Date");
-        expectedColumns.add("Last Modified Date");
-    }
-
-    @After
-    public void tearDown() throws Exception {
-        if (helper.isElementPresent(By.cssSelector("#site-" + siteName))) {
+    @AfterClass
+    public static void tearDown() throws Exception {
+        for (int i = 0; i < numAccounts; i++) {
+            String siteName = "Site" + i;
             helper.deleteSaturnVaultAccount(siteName, false);
         }
         helper.tearDown();

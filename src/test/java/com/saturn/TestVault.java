@@ -13,6 +13,8 @@ import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.io.File;
 import java.util.concurrent.TimeUnit;
@@ -59,33 +61,43 @@ public class TestVault {
 		helper.createSaturnVaultAccount(siteName);
 
 		//after creation ensure the account is in the list
-		helper.driver.findElement(By.cssSelector("table > tbody > tr")); // implicit wait
-		WebElement siteNameCell = helper.driver.findElement(By.xpath("//td[contains(text(),'" + siteName + "')]"));
+		new WebDriverWait(helper.driver, 3).until(ExpectedConditions.visibilityOfElementLocated(By.id("#site-" + siteName)));
+		WebElement siteNameCell = helper.driver.findElement(By.id("#site-" + siteName));
 		assertEquals(siteName, siteNameCell.getText());
 	}
 
+	@Test
+	public void cancelSaturnVaultAccountCreationTest() {
+		helper.login();
 
+		String cancelledSiteName = "Site"+ RandomStringUtils.randomAlphanumeric(12);
+
+		helper.driver.get(helper.url+"/#/saturn-vault/new");
+
+		helper.driver.findElement(By.id("field_site")).sendKeys(cancelledSiteName);
+		helper.driver.findElement(By.id("field_login")).sendKeys("test_user");
+		helper.driver.findElement(By.id("field_password")).sendKeys("test_password");
+
+		helper.driver.findElement(By.cssSelector(".cancel-button")).click();
+
+		// Assert that password account was not created
+		assertFalse(helper.isElementPresent(By.cssSelector("#site-" + cancelledSiteName)));
+	}
 
 	@Test
-	public void showThenHidePassword() {
+	public void saturnVaultInvalidAccountCreationTest() {
 		helper.login();
-		
-		if(!helper.isElementPresent(By.cssSelector("#site-" + siteName))){
-			helper.createSaturnVaultAccount(siteName);
-		}
 
-		// Assert that no saturnpass-password elements exist that are showing plaintext
-		assertFalse(helper.isElementPresent(By.cssSelector("input[type=text].saturnpass-password")));
+		String cancelledSiteName = "Site"+ RandomStringUtils.randomAlphanumeric(12);
 
-		// Click the button to view the password we just created
-		// The row is id'd by "site-[siteName]", and the visibility toggler
-		// has class .toggle-password-visibility
-		// Note that a space in CSS selectors represents a parent->child relationship
-		helper.driver.findElement(By.cssSelector("#site-" + siteName + " .toggle-password-visible")).click();
+		helper.driver.get(helper.url+"/#/saturn-vault/new");
 
-		// Assert that our created password now shows in plaintext
-		assertTrue(helper.isElementPresent(By.cssSelector("#site-" + siteName + " input[type=text].saturnpass-password")));
+		helper.driver.findElement(By.id("field_site")).sendKeys(cancelledSiteName);
+		// Do not put a login
+		helper.driver.findElement(By.id("field_password")).sendKeys("test_password");
 
+		// Assert that submit is disabled
+		assertTrue(helper.isElementPresent(By.cssSelector("button[disabled=disabled][type=submit]")));
 	}
 	
 	@After

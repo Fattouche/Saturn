@@ -1,8 +1,11 @@
 package com.saturn;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
+import java.lang.InterruptedException;
 import java.util.concurrent.TimeUnit;
+import org.apache.commons.io.FileUtils;
 
 import org.openqa.selenium.*;
 import org.openqa.selenium.By;
@@ -50,11 +53,18 @@ public class TestHelper {
 
 	public void login(String username, String password) {
 		driver.get(url);
-		driver.findElement(By.id("login")).click();
-		driver.findElement(By.id("username")).sendKeys(username);
-		driver.findElement(By.id("password")).sendKeys(password);
 
-		driver.findElement(By.id("password")).submit();
+		// Wait until nav bar loads
+		new WebDriverWait(driver, 3).until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(".menu")));
+
+		// If login isn't there, assume already logged in
+		if (isElementPresent(By.id("login"))) {
+			driver.findElement(By.id("login")).click();
+			driver.findElement(By.id("username")).sendKeys(username);
+			driver.findElement(By.id("password")).sendKeys(password);
+
+			driver.findElement(By.id("password")).submit();
+		}
 	}
 
 	public void createSaturnVaultAccount(String siteName) {
@@ -90,6 +100,24 @@ public class TestHelper {
 			driver.findElement(By.cssSelector("form[name=deleteForm] .cancel-button")).click();
 		}
 
+	}
+
+	public void createAccounts(int numberOfAccounts) {
+		for (int i = 0; i < numberOfAccounts; i++) {
+			String siteName = "Site" + i;
+			createSaturnVaultAccount(siteName);
+		}
+	}
+
+	public List<String> expectedColumns() {
+		List<String> expectedColumns = new ArrayList<String>();
+		expectedColumns.add("ID");
+		expectedColumns.add("Site");
+		expectedColumns.add("Login");
+		expectedColumns.add("Password");
+		expectedColumns.add("Created Date");
+		expectedColumns.add("Last Modified Date");
+		return expectedColumns;
 	}
 
 	public void closeForm(String name) {

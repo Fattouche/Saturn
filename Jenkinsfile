@@ -4,13 +4,15 @@ pipeline {
     
     environment {
         SATURN_DRIVER = 'asdasd'
-        SATURN_URL    = 'http://localhost:5000'
+        SATURN_URL    = 'http://142.104.90.101:8008'
+        REVERT_COMMIT = '3750db7aa0ae77858b8d7606f472093d9c7e12da'
     }
     
 
     stages {
         stage('Build') { 
-            steps {
+            steps { 
+                sh 'git reset --hard $REVERT_COMMIT'
                 sh 'mvn -B -DskipTests clean package'
 				sh 'rm src/main/resources/config/application-dev.yml'
 				sh 'cp src/main/resources/config/application-dev-jenkins.yml src/main/resources/config/application-dev.yml'
@@ -19,9 +21,13 @@ pipeline {
                 sh 'mkdir -p dist/config'
                 sh 'mkdir -p dist/mediaResources'
                 sh 'cp src/main/resources/config/application-dev-jenkins.yml dist/config/application-dev.yml'
-                sh 'java -jar dist/saturn-1.0.4.war &'
+                sh 'java -jar dist/saturn-1.0.4.war 2> errorOutput.log > output.log &'
                 sh 'sleep 30'
+                sh 'cat output.log'
+                sh 'cat errorOutput.log'
+                sh 'git reset --hard HEAD'
 				sh 'mvn -Dtest=TestVault test'
+                
             }
         }
     }

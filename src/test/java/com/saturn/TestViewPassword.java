@@ -1,8 +1,8 @@
 package com.saturn;
 
 import org.apache.commons.lang3.RandomStringUtils;
-import org.junit.After;
-import org.junit.Before;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
@@ -13,12 +13,12 @@ import java.util.*;
 import static org.junit.Assert.*;
 
 public class TestViewPassword {
-    private TestHelper helper;
-    private List<String> expectedPasswords;
-    private String siteName;
+    private static TestHelper helper;
+    private static List<String> expectedPasswords;
+    private static String siteName;
 
-    @Before
-    public void setUp() throws Exception {
+    @BeforeClass
+    public static void setUp() throws Exception {
         helper = new TestHelper();
         helper.driver.get(helper.url);
         siteName = "Site" + RandomStringUtils.randomAlphanumeric(8);
@@ -34,12 +34,19 @@ public class TestViewPassword {
         boolean found = false;
         for (List<String> items : passwords) {
             assertTrue(isInteger(items.get(0)));
-            assertTrue(items.get(1).contains("Site"));
             if (items.get(2).equals(helper.defaultLogin)) {
+                assertTrue(items.get(1).contains("Site"));
                 found = true;
             }
         }
         assertTrue(found);
+    }
+
+    // Test that all of the expected columns are shown to the user
+    @Test
+    public void checkColumnsTest() {
+        List<String> columns = helper.getSaturnVaultColumns();
+        assertTrue(columns.containsAll(helper.expectedColumns()));
     }
 
     public static boolean isInteger(String s) {
@@ -57,8 +64,8 @@ public class TestViewPassword {
         return isValidInteger;
     }
 
-    @After
-    public void tearDown() throws Exception {
+    @AfterClass
+    public static void tearDown() throws Exception {
         if (helper.isElementPresent(By.cssSelector("#site-" + siteName))) {
             helper.deleteSaturnVaultAccount(siteName, false);
         }
