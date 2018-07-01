@@ -12,11 +12,19 @@
     <jhi-alert></jhi-alert>
     <div class="container-fluid">
         <div class="row">
-            <div class="col-xs-4 no-padding-left">
+            <div class="col-xs-12 no-padding-left">
                 <button class="btn btn-primary" ui-sref="saturn-vault.new" >
                     <span class="glyphicon glyphicon-plus"></span>
                     <span>Create new Saturn Vault</span>
                 </button>
+                <button class="btn btn-secondary" ui-sref="saturn-vault.import" >
+                    <span class="glyphicon glyphicon-save"></span>
+                    <span>Import Vault CSV</span>
+                </button>
+                <a href="/api/saturn-vaults/export" target="_blank" class="btn btn-secondary">
+                    <span class="glyphicon glyphicon-open"></span>
+                    <span>Export Vault CSV</span>
+                </a>
             </div>
         </div>
     </div>

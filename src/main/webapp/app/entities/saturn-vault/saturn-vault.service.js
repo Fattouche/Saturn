@@ -39,6 +39,23 @@
 					copy.lastModifiedDate = DateUtils.convertLocalDateToServer(copy.lastModifiedDate);
 					return angular.toJson(copy);
 				}
+			},
+			'import': {
+				url: 'api/saturn-vaults/import',
+				method: 'POST',
+				isArray: true,
+				headers: {'Content-Type': undefined}, //Set the Content-Type header to undefined so that browser can take care of form data boundaries
+				transformRequest: function (data) {
+					if (data == undefined) {
+						return data;
+					}
+
+					var fd = new FormData();
+
+					fd.append("file", data["file"]);
+
+					return fd;
+				}
 			}
 		});
 	}

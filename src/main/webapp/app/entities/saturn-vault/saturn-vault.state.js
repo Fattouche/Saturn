@@ -78,6 +78,26 @@
 						});
 					}]
 			})
+			.state('saturn-vault.import', {
+				parent: 'saturn-vault',
+				url: '/import',
+				data: {
+					roles: ['USER', 'EMPLOYEE', 'MANAGER', 'ADMIN']
+				},
+				onEnter: ['$stateParams', '$state', '$uibModal', function ($stateParams, $state, $uibModal) {
+						$uibModal.open({
+							templateUrl: 'app/entities/saturn-vault/saturn-vault-import.html',
+							controller: 'SaturnVaultImportController',
+							controllerAs: 'vm',
+							backdrop: 'static',
+							size: 'lg',
+						}).result.then(function () {
+							$state.go('saturn-vault', null, {reload: 'saturn-vault'});
+						}, function () {
+							$state.go('saturn-vault');
+						});
+					}]
+			})
 			.state('saturn-vault.edit', {
 				parent: 'saturn-vault',
 				url: '/{id}/edit',
