@@ -31,7 +31,7 @@ public class TestSortPasswords {
         helper.login();
 
         // get and delete existing vaults
-        existingAccounts = helper.listSaturnVaultAccounts(1, false);
+        existingAccounts = helper.listSaturnVaultAccountsOnPage(1, false);
 
         for (List<String> temp : existingAccounts) {
             helper.deleteSaturnVaultAccount(temp.get(1), false);
@@ -171,7 +171,7 @@ public class TestSortPasswords {
 
     public void getListAndAssertBy(boolean ascending, boolean isNum, int index) throws Exception {
         boolean stay_on_page = ascending ? false : true;
-        existingAccounts = helper.listSaturnVaultAccounts(1, stay_on_page);
+        existingAccounts = helper.listSaturnVaultAccountsOnPage(1, stay_on_page);
 
         String first = existingAccounts.get(0).get(index);
         String last = existingAccounts.get(existingAccounts.size() - 1).get(index);
