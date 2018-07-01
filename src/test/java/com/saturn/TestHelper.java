@@ -23,6 +23,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.*;
+import java.lang.*;
 
 public class TestHelper {
 	public WebDriver driver;
@@ -32,6 +33,7 @@ public class TestHelper {
 	public String validPassword = "pizzaman";
 	public String defaultLogin = "speaker";
 	public String defaultPass = "guitar";
+	public int timeout = 30;
 
 	public TestHelper() throws Exception {
 		String driverName = System.getenv("SATURN_DRIVER");
@@ -52,10 +54,7 @@ public class TestHelper {
 	}
 
 	public void login(String username, String password){
-		driver.get(url);			
-
-		// Wait until nav bar loads
-		new WebDriverWait(driver, 3).until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(".menu")));
+		getWithWait(url, ".menu");
 
 		// If login isn't there, assume already logged in
 		if (isElementPresent(By.id("login")))
@@ -73,8 +72,7 @@ public class TestHelper {
 	}
 
 	public void createSaturnVaultAccount(String siteName, String login, String password){
-		driver.get(url+"/#/saturn-vault/new");
-
+		getWithWait(url+"/#/saturn-vault/new", "#field_site");
 
 		driver.findElement(By.id("field_site")).sendKeys(siteName);
 		driver.findElement(By.id("field_login")).sendKeys(login);
@@ -83,7 +81,7 @@ public class TestHelper {
 		driver.findElement(By.cssSelector("form[name='editForm']")).submit();
 
 		// wait for the submission to finish
-		new WebDriverWait(driver, 3).until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector("form[name='editForm']")));
+		new WebDriverWait(driver, timeout).until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector("form[name='editForm']")));
 	}
 	
 	public void deleteSaturnVaultAccount(String siteName, boolean cancel){
@@ -120,13 +118,14 @@ public class TestHelper {
 	public void closeForm(String name){
 		if(isElementPresent(By.cssSelector("form[name='"+name+"']"))){
 			driver.findElement(By.cssSelector("form[name='"+name+"'] .cancel-button")).click();
-			new WebDriverWait(driver, 3).until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector("form[name='"+name+"']")));
+
+			new WebDriverWait(driver, timeout).until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector("form[name='"+name+"']")));
 		}
 
 	}
 
 	public List<List<String>> listSaturnVaultAccounts(){
-		driver.get(url+"/#/saturn-vault");
+		getWithWait(url+"/#/saturn-vault", ".table-responsive");
 		WebElement tablePasswords = driver.findElement(By.cssSelector(".table-responsive .jh-table.table.table-striped tbody"));
 		List<WebElement> passwords = tablePasswords.findElements(By.tagName("tr"));
 		List<List<String>> stringPasswords = new ArrayList<List<String>>();
@@ -142,7 +141,7 @@ public class TestHelper {
 	}
 
 	public List<String> getSaturnVaultColumns(){
-		driver.get(url+"/#/saturn-vault");
+		getWithWait(url+"/#/saturn-vault", ".table-responsive");
 		WebElement tablePasswords = driver.findElement(By.cssSelector(".table-responsive .jh-table.table.table-striped thead"));
 		List<WebElement> columnNames = tablePasswords.findElements(By.tagName("th"));
 		List<String> names = new ArrayList<String>();
@@ -163,6 +162,17 @@ public class TestHelper {
 		} catch (org.openqa.selenium.NoSuchElementException e) {
 			return false;
 		}
+	}
+
+	public void getWithWait(String URL, String cssSelectorToWaitFor) {
+		if (driver.getCurrentUrl().equals(URL)) {
+			// A get() will not refresh if you are already at that URL
+			driver.navigate().refresh();
+		}
+		else {
+			driver.get(URL);
+		}
+		new WebDriverWait(driver, timeout).until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(cssSelectorToWaitFor)));
 	}
 
 	
