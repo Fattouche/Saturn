@@ -156,6 +156,22 @@ public class TestHelper {
 		return names;
 	}
 
+	public void open_Gen_Pass_form() {
+        WebElement element = driver.findElement(By.xpath("//a[contains(text(),'SaturnVault')]"));
+        JavascriptExecutor executor = (JavascriptExecutor) driver;
+        executor.executeScript("arguments[0].click();", element);
+        WebElement create_new_SV_Button = (new WebDriverWait(driver, 10, 500))
+                .until(ExpectedConditions.elementToBeClickable(
+                        By.cssSelector("button[ui-sref=\"saturn-vault.new\"]"))
+                );
+        create_new_SV_Button.click();
+        WebElement generate_Button = (new WebDriverWait(driver, 10, 500))
+                .until(ExpectedConditions.elementToBeClickable(
+                        By.cssSelector("button[ng-click=\"vm.openPwdGenModal()\"]"))
+                );
+        generate_Button.click();
+    }
+
 	public void tearDown() throws Exception {
 		this.driver.quit();
 	}
