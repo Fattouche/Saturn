@@ -7,6 +7,8 @@ import org.junit.Before;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.*;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -39,7 +41,7 @@ public class TestPagination {
   @BeforeClass
 	public static void setUp() throws Exception {
 		helper = new TestHelper();
-		helper.driver.get(helper.url);
+		helper.getWithWait(helper.url, ".menu");
 
     helper.login();
 
@@ -48,59 +50,73 @@ public class TestPagination {
 		siteNameBase = "CoolSite" + RandomStringUtils.randomAlphanumeric(8);
     
     // Create enough accounts that they will be split onto multiple pages
-    // for (int i = 0; i < accountsPerPage + 1; i++) {
-    //   String siteName = siteNameBase + "_" + i;
+    for (int i = 0; i < accountsPerPage + 1; i++) {
+      String siteName = siteNameBase + "_" + i;
 
-    //   if(!helper.isElementPresent(By.cssSelector("#site-" + siteName))){
-    //     helper.createSaturnVaultAccount(siteName);
-    //   }
-    // }
+      if(!helper.isElementPresent(By.cssSelector("#site-" + siteName))){
+        helper.createSaturnVaultAccount(siteName);
+      }
+    }
 	}
 
   @Test
   public void testNextPage() {
-    // Click has been failing, so use get() for now
-    //helper.driver.findElement(By.cssSelector(".next")).click();
-    helper.driver.get(helper.url + "?page=2");
+    // Start at page 1
+    helper.getWithWait(helper.url + "/#/saturn-vault?page=1", ".next");
 
+    // Get first page passwords
+    List<List<String>> firstPagePasswords = helper.listSaturnVaultAccountsOnPage(1);
+    
+    // Assert that next button can be used
     assertFalse(helper.isElementPresent(By.cssSelector(".next.disabled")));
     assertTrue(helper.isElementPresent(By.cssSelector(".next")));
 
-    List<List<String>> secondPagePasswords = helper.listSaturnVaultAccounts();
+    // Go to page 2
+    // Click has been failing, so use get() for now
+    //helper.driver.findElement(By.cssSelector(".next")).click();
+    helper.getWithWait(helper.url + "/#/saturn-vault?page=2", ".next");
 
-    // Assert that we now only see one password
-    assertTrue(secondPagePasswords.size() == 1);
+    List<List<String>> secondPagePasswords = helper.listSaturnVaultAccountsOnPage(2);
 
-    // Assert that next button is now disabled
-    assertTrue(helper.isElementPresent(By.cssSelector(".next")));
+    // Assert that second page has different ids than first
+    for (List<String> firstPageRow : firstPagePasswords) {
+      String id = firstPageRow.get(0);
+
+      for (List<String> secondPageRow : secondPagePasswords) {
+        assertThat(id, not(equalTo(secondPageRow.get(0))));
+      }
+    }
+
+    // Assert that next button is disabled
+    assertTrue(helper.isElementPresent(By.cssSelector(".next.disabled")));
   }
 
   @Test
   public void testNoNextPage() {
-    helper.driver.get(helper.url + "?page=2");
+    helper.getWithWait(helper.url + "/#/saturn-vault?page=2", ".next");
     
     assertTrue(helper.isElementPresent(By.cssSelector(".next.disabled")));
   }
 
   @Test
-  public void testPrevPage() {
-    helper.driver.get(helper.url + "?page=2");
+  public void testPreviousPage() {
+    helper.getWithWait(helper.url + "/#/saturn-vault?page=2", ".next");
 
-    assertTrue(helper.isElementPresent(By.cssSelector(".prev")));
-    assertFalse(helper.isElementPresent(By.cssSelector(".prev.disabled")));
+    assertTrue(helper.isElementPresent(By.cssSelector(".previous")));
+    assertFalse(helper.isElementPresent(By.cssSelector(".previous.disabled")));
 
-    helper.driver.get(helper.url + "?page=1");
+    helper.getWithWait(helper.url + "/#/saturn-vault?page=1", ".next");
 
-    List<List<String>> firstPagePasswords = helper.listSaturnVaultAccounts();
+    List<List<String>> firstPagePasswords = helper.listSaturnVaultAccountsOnPage(1);
 
-    assertTrue(firstPagePasswords.size() == 20);
+    assertTrue(firstPagePasswords.size() == accountsPerPage);
   }
 
   @Test
-  public void testNoPrevPage() {
-    helper.driver.get(helper.url + "?page=1");
+  public void testNoPreviousPage() {
+    helper.getWithWait(helper.url + "/#/saturn-vault?page=1", ".next");
     
-    assertTrue(helper.isElementPresent(By.cssSelector(".prev.disabled")));
+    assertTrue(helper.isElementPresent(By.cssSelector(".previous.disabled")));
   }
 
 
@@ -108,13 +124,13 @@ public class TestPagination {
 	public static void tearDown() throws Exception {
 
     // Delete the created accounts
-    // for (int i = 0; i < accountsPerPage + 1; i++) {
-    //   String siteName = siteNameBase + "_" + i;
+    for (int i = 0; i < accountsPerPage + 1; i++) {
+      String siteName = siteNameBase + "_" + i;
 
-    //   if(helper.isElementPresent(By.cssSelector("#site-" + siteName))){
-    //     helper.deleteSaturnVaultAccount(siteName, false);
-    //   }
-    // }
+      if(helper.isElementPresent(By.cssSelector("#site-" + siteName))){
+        helper.deleteSaturnVaultAccount(siteName, false);
+      }
+    }
 		
 		helper.tearDown();
 	}

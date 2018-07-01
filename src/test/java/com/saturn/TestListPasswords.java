@@ -28,7 +28,7 @@ public class TestListPasswords {
 	@Test
 	public void listPasswordsTest(){
         helper.createAccounts(numAccounts);
-        List<List<String>> passwords = helper.listSaturnVaultAccounts();
+        List<List<String>> passwords = helper.listSaturnVaultAccountsOnPage(1);
         assertEquals(passwords.size(), numAccounts);
         for(int i=0;i<passwords.size();i++){
             assertEquals(passwords.get(i).get(1), "Site"+i);

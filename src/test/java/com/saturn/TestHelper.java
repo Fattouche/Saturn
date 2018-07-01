@@ -124,8 +124,8 @@ public class TestHelper {
 
 	}
 
-	public List<List<String>> listSaturnVaultAccounts(){
-		getWithWait(url+"/#/saturn-vault", ".table-responsive");
+	public List<List<String>> listSaturnVaultAccountsOnPage(int pageNum){
+		getWithWait(url+"/#/saturn-vault?page=" + pageNum, ".table-responsive");
 		WebElement tablePasswords = driver.findElement(By.cssSelector(".table-responsive .jh-table.table.table-striped tbody"));
 		List<WebElement> passwords = tablePasswords.findElements(By.tagName("tr"));
 		List<List<String>> stringPasswords = new ArrayList<List<String>>();
@@ -166,7 +166,8 @@ public class TestHelper {
 
 	public void getWithWait(String URL, String cssSelectorToWaitFor) {
 		if (driver.getCurrentUrl().equals(URL)) {
-			// A get() will not refresh if you are already at that URL
+			// A get() will not refresh if you are already at that URL, so
+			// refresh explicitly
 			driver.navigate().refresh();
 		}
 		else {
