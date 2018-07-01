@@ -96,7 +96,7 @@ public class TestShowHidePasswords {
 
 	@Test
 	public void togglePasswordInEdit() {
-		List<List<String>> passwords = helper.listSaturnVaultAccountsOnPageOnPage(1, false);
+		List<List<String>> passwords = helper.listSaturnVaultAccountsOnPage(1, false);
 
 		// Get an ID of a password account, so that we can edit it
 		String someAccountId = passwords.get(0).get(0);

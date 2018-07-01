@@ -127,7 +127,7 @@ public class TestHelper {
 
 	}
 
-	public List<List<String>> listSaturnVaultAccountsOnPageOnPage(int pageNum, boolean skipRefresh){
+	public List<List<String>> listSaturnVaultAccountsOnPage(int pageNum, boolean skipRefresh){
 		if (!skipRefresh) {
 			getWithWait(url+"/#/saturn-vault?page=" + pageNum, ".table-responsive");
 		}
