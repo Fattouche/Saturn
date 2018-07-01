@@ -184,6 +184,9 @@ public class TestGeneratePassword {
         helper.driver.findElement(By.xpath("//span[contains(@class, 'glyphicon-refresh')]")).click();
         wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("button[ng-click=\"vm.generate()\"]")));
         helper.driver.findElement(By.cssSelector("button[ng-click=\"vm.generate()\"]")).click();
+        WebElement length_Field = helper.driver.findElement(By.id("field_length"));
+        password_Field = helper.driver.findElement(By.id("field_password"));
+        validate_length(password_Field.getAttribute("value"),length_Field.getAttribute("value")); 
     }
 
     private void validate_length(String password,String length_in_string){
