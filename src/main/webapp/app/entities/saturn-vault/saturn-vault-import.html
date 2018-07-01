@@ -18,7 +18,7 @@
         <div style="height: 20px"></div>
         <div class="form-group">
             <label class="control-label" for="upload_file">CSV File</label>
-            <input type="file" class="form-control" name="uploadFile" id="upload_file"
+            <input type="file" accept=".csv" class="form-control" name="uploadFile" id="upload_file"
 				   file-upload ng-model="uploadFile" required />
             <div ng-show="importForm.uploadFile.$invalid">
                 <p class="help-block" ng-show="importForm.uploadFile.$error.required">
