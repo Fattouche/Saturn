@@ -25,11 +25,11 @@ public class TestViewPassword {
         helper.login();
         helper.createSaturnVaultAccount(siteName);
     }
-
-    // Test that we can see the specific details for a site
-    @Test
-    public void viewPasswordTest() {
-        List<List<String>> passwords = helper.listSaturnVaultAccounts(false);
+    
+    //Test that we can see the specific details for a site
+	@Test
+	public void viewPasswordTest(){
+		List<List<String>> passwords = helper.listSaturnVaultAccountsOnPage(1, false);
         assertFalse(passwords.isEmpty());
         boolean found = false;
         for (List<String> items : passwords) {

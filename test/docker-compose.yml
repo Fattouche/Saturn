@@ -16,7 +16,7 @@ services:
       - ..:/saturn
     networks:
       - saturn_default
-    command: ["mvn", "-e", "-Dtest=TestShowHidePasswords*", "test"]
+    command: ["mvn", "-e", "-Dtest=TestPagination*", "test"]
 
 networks:
   saturn_default:
