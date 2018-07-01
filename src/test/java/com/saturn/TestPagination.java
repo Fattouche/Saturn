@@ -65,7 +65,7 @@ public class TestPagination {
     helper.getWithWait(helper.url + "/#/saturn-vault?page=1", ".next");
 
     // Get first page passwords
-    List<List<String>> firstPagePasswords = helper.listSaturnVaultAccountsOnPage(1);
+    List<List<String>> firstPagePasswords = helper.listSaturnVaultAccountsOnPage(1, false);
     
     // Assert that next button can be used
     assertFalse(helper.isElementPresent(By.cssSelector(".next.disabled")));
