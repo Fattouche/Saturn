@@ -12,35 +12,35 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import java.util.*;
 import static org.junit.Assert.*;
 
-
 public class TestListPasswords {
     private static TestHelper helper;
     private static int numAccounts = 10;
 
-	@BeforeClass
-	public static void setUp() throws Exception {
+    @BeforeClass
+    public static void setUp() throws Exception {
         helper = new TestHelper();
         helper.driver.get(helper.url);
         helper.login();
     }
-    
-    //List all saturn vault passwords/accounts and test that it isn't empty after we made an account
-	@Test
-	public void listPasswordsTest(){
+
+    // List all saturn vault passwords/accounts and test that it isn't empty after
+    // we made an account
+    @Test
+    public void listPasswordsTest() {
         helper.createAccounts(numAccounts);
-        List<List<String>> passwords = helper.listSaturnVaultAccounts();
+        List<List<String>> passwords = helper.listSaturnVaultAccounts(false);
         assertEquals(passwords.size(), numAccounts);
-        for(int i=0;i<passwords.size();i++){
-            assertEquals(passwords.get(i).get(1), "Site"+i);
+        for (int i = 0; i < passwords.size(); i++) {
+            assertEquals(passwords.get(i).get(1), "Site" + i);
         }
     }
-	
-	@AfterClass
-	public static void tearDown() throws Exception {
-        for(int i=0;i<numAccounts;i++){
-            String siteName = "Site"+i;
-			helper.deleteSaturnVaultAccount(siteName, false);
-		}
+
+    @AfterClass
+    public static void tearDown() throws Exception {
+        for (int i = 0; i < numAccounts; i++) {
+            String siteName = "Site" + i;
+            helper.deleteSaturnVaultAccount(siteName, false);
+        }
         helper.tearDown();
-	}
+    }
 }
