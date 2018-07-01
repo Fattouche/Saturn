@@ -42,12 +42,12 @@ public class TestGeneratePassword {
 	public void setUp() throws Exception {
 		String driverName = System.getenv("SATURN_DRIVER");
 		if (driverName == null) {
-			driverName = "chrome";
+			driverName = "remote";
 		}
 
 		url = System.getenv("SATURN_URL");
 		if (url == null) {
-			url = "http://localhost:8080";
+			url = "http://saturn:8080";
 		}
         System.out.println("Driver Name: " + driverName + "\nUrl: " + url);
 		setDriver(driverName);
@@ -210,22 +210,23 @@ public class TestGeneratePassword {
 	private void setDriver(String driverName) {
 		driverName = driverName.toLowerCase();
 
-		long timeout = 10;
+		long timeout = 5;
 
 		switch (driverName) {
 			case "firefox":
-				System.setProperty("webdriver.gecko.driver", "");
-				driver = new FirefoxDriver(new FirefoxBinary(new File("/usr/bin/firefox")), new FirefoxProfile());
+				System.setProperty("webdriver.gecko.driver", "/opt/dgsdfgsdgdsgsdf");
+				driver = new FirefoxDriver(new FirefoxBinary(new File("/usr/bin/firefox-esr")), new FirefoxProfile());
 				driver.manage().window().maximize();
 				break;
 			case "chrome":
-				System.setProperty("webdriver.chrome.driver","/chromedriver.exe");
-				driver = new ChromeDriver();
+				ChromeOptions options = new ChromeOptions();
+				options.addArguments("--start-maximized");
+				driver = new ChromeDriver(options);
 				break;
 			case "remote":
 				DesiredCapabilities capabilities = new DesiredCapabilities();
 				capabilities.setBrowserName("firefox");
-				
+
 				String remoteUrlString = System.getenv("SELENIUM_URL");
 				if (remoteUrlString == null) {
 					remoteUrlString = "http://selenium:4444/wd/hub";
