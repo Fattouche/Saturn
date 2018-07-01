@@ -2,9 +2,10 @@ package com.saturn;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -32,150 +33,176 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 public class TestGeneratePassword {
-	private static TestHelper helper;
-    private static List<String> expectedPasswords;
-    private static String siteName;
-	private static WebDriverWait wait;
-	private static boolean acceptNextAlert = true;
-    private static StringBuffer verificationErrors = new StringBuffer();
+    private TestHelper helper;
+    private List<String> expectedPasswords;
+    private String siteName;
+    private WebDriverWait wait;
+    private boolean acceptNextAlert = true;
+    private StringBuffer verificationErrors = new StringBuffer();
 
-	@BeforeClass
-	public static void setUp() throws Exception {
-		helper = new TestHelper();
+    @Before
+    public void setUp() throws Exception {
+        helper = new TestHelper();
         helper.driver.get(helper.url);
         siteName = "Site"+ RandomStringUtils.randomAlphanumeric(8);
-        helper.driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
+        helper.driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
         helper.driver.manage().timeouts().pageLoadTimeout(10, TimeUnit.SECONDS);
         helper.driver.manage().timeouts().setScriptTimeout(5, TimeUnit.SECONDS);
-        wait = new WebDriverWait(helper.driver, 50);
+        wait = new WebDriverWait(helper.driver, 15);
 
         helper.login();
-		helper.open_Gen_Pass_form();
-	}
+        helper.open_Gen_Pass_form();
+    }
+
+    @Test
+    public void Generate_Password_Modal() throws Exception {
+        WebElement pwGenForm = (new WebDriverWait(helper.driver, 10, 500))
+                .until(ExpectedConditions.elementToBeClickable(
+                        By.cssSelector("form[name=\"pdwGenForm\"]"))
+                );
+        assertEquals(true, pwGenForm.isDisplayed());
+        wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//span[contains(@class, 'glyphicon-ban-circle')]")));
+        helper.driver.findElement(By.xpath("//span[contains(@class, 'glyphicon-ban-circle')]")).click(); 
+    }
 
     @Test
     public void password_with_Repetition() throws Exception {
-    	helper.driver.findElement(By.xpath("//span[contains(@class, 'glyphicon-refresh')]")).click();
-    	WebElement password_Field = helper.driver.findElement(By.id("field_password"));
-    	WebElement length_Field = helper.driver.findElement(By.id("field_length"));
-    	helper.driver.findElement(By.cssSelector("button[ng-click=\"vm.generate()\"]")).click();
-    	wait.until(ExpectedConditions.attributeToBeNotEmpty(password_Field, "value"));
-    	validate_length(password_Field.getAttribute("value"),length_Field.getAttribute("value"));
-        helper.driver.findElement(By.xpath("//span[contains(@class, 'glyphicon-ban-circle')]")).click();
+        wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//span[contains(@class, 'glyphicon-refresh')]")));
+        helper.driver.findElement(By.xpath("//span[contains(@class, 'glyphicon-refresh')]")).click();
+        WebElement password_Field = helper.driver.findElement(By.id("field_password"));
+        WebElement length_Field = helper.driver.findElement(By.id("field_length"));
+        helper.driver.findElement(By.cssSelector("button[ng-click=\"vm.generate()\"]")).click();
+        wait.until(ExpectedConditions.attributeToBeNotEmpty(password_Field, "value"));
+        validate_length(password_Field.getAttribute("value"),length_Field.getAttribute("value"));
+        wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//span[contains(@class, 'glyphicon-save')]")));
+        helper.driver.findElement(By.xpath("//span[contains(@class, 'glyphicon-save')]")).click();
     }
 
- 
+
+
     @Test
     public void password_without_Repetition() throws Exception{
-   		helper.driver.findElement(By.xpath("//span[contains(@class, 'glyphicon-refresh')]")).click();
-    	WebElement password_Field = helper.driver.findElement(By.id("field_password"));
-    	helper.driver.findElement(By.id("field_length")).clear();
-    	helper.driver.findElement(By.id("field_length")).sendKeys("10");	//Setting Given Lenght to 10 charaters
-    	WebElement length_Field = helper.driver.findElement(By.id("field_length"));
-    	helper.driver.findElement(By.id("field_repetition")).click();
-    	helper.driver.findElement(By.cssSelector("button[ng-click=\"vm.generate()\"]")).click();
-    	wait.until(ExpectedConditions.attributeToBeNotEmpty(password_Field, "value"));
-    	validate_length(password_Field.getAttribute("value"),length_Field.getAttribute("value"));
-        helper.driver.findElement(By.xpath("//span[contains(@class, 'glyphicon-ban-circle')]")).click();    	
+        wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//span[contains(@class, 'glyphicon-refresh')]")));
+        helper.driver.findElement(By.xpath("//span[contains(@class, 'glyphicon-refresh')]")).click();
+        WebElement password_Field = helper.driver.findElement(By.id("field_password"));
+        helper.driver.findElement(By.id("field_length")).clear();
+        helper.driver.findElement(By.id("field_length")).sendKeys("10");    //Setting Given Lenght to 10 charaters
+        WebElement length_Field = helper.driver.findElement(By.id("field_length"));
+        helper.driver.findElement(By.id("field_repetition")).click();
+        helper.driver.findElement(By.cssSelector("button[ng-click=\"vm.generate()\"]")).click();
+        wait.until(ExpectedConditions.attributeToBeNotEmpty(password_Field, "value"));
+        validate_length(password_Field.getAttribute("value"),length_Field.getAttribute("value"));
+        wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//span[contains(@class, 'glyphicon-ban-circle')]")));
+        helper.driver.findElement(By.xpath("//span[contains(@class, 'glyphicon-ban-circle')]")).click();        
     }
 
     @Test
     public void password_with_Lowercase_only() throws Exception{
-    	helper.driver.findElement(By.xpath("//span[contains(@class, 'glyphicon-refresh')]")).click();
-    	confirm_click("field_digits");
-    	confirm_click("field_upper");
-    	confirm_click("field_special");
-    	WebElement password_Field = helper.driver.findElement(By.id("field_password"));
-    	WebElement length_Field = helper.driver.findElement(By.id("field_length"));
-    	helper.driver.findElement(By.cssSelector("button[ng-click=\"vm.generate()\"]")).click();
-    	wait.until(ExpectedConditions.attributeToBeNotEmpty(password_Field, "value"));
-    	validate_length(password_Field.getAttribute("value"),length_Field.getAttribute("value"));
-    	validate_charaters("Lower",password_Field.getAttribute("value"));
-        helper.driver.findElement(By.xpath("//span[contains(@class, 'glyphicon-ban-circle')]")).click();      	
+        wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//span[contains(@class, 'glyphicon-refresh')]")));
+        helper.driver.findElement(By.xpath("//span[contains(@class, 'glyphicon-refresh')]")).click();
+        confirm_click("field_digits");
+        confirm_click("field_upper");
+        confirm_click("field_special");
+        WebElement password_Field = helper.driver.findElement(By.id("field_password"));
+        WebElement length_Field = helper.driver.findElement(By.id("field_length"));
+        helper.driver.findElement(By.cssSelector("button[ng-click=\"vm.generate()\"]")).click();
+        wait.until(ExpectedConditions.attributeToBeNotEmpty(password_Field, "value"));
+        validate_length(password_Field.getAttribute("value"),length_Field.getAttribute("value"));
+        validate_charaters("Lower",password_Field.getAttribute("value"));
+        wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//span[contains(@class, 'glyphicon-save')]")));
+        helper.driver.findElement(By.xpath("//span[contains(@class, 'glyphicon-save')]")).click();          
     }
 
     @Test
     public void password_with_Uppercase_only() throws Exception{
-    	helper.driver.findElement(By.xpath("//span[contains(@class, 'glyphicon-refresh')]")).click();
-    	confirm_click("field_lower");
-    	confirm_click("field_digits");
-    	confirm_click("field_special");
-    	WebElement password_Field = helper.driver.findElement(By.id("field_password"));
-    	WebElement length_Field = helper.driver.findElement(By.id("field_length"));
-    	helper.driver.findElement(By.cssSelector("button[ng-click=\"vm.generate()\"]")).click();
-    	wait.until(ExpectedConditions.attributeToBeNotEmpty(password_Field, "value"));
-    	validate_length(password_Field.getAttribute("value"),length_Field.getAttribute("value"));
-    	validate_charaters("Upper",password_Field.getAttribute("value"));
-        helper.driver.findElement(By.xpath("//span[contains(@class, 'glyphicon-ban-circle')]")).click();  
+        wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//span[contains(@class, 'glyphicon-refresh')]")));
+        helper.driver.findElement(By.xpath("//span[contains(@class, 'glyphicon-refresh')]")).click();
+        confirm_click("field_lower");
+        confirm_click("field_digits");
+        confirm_click("field_special");
+        WebElement password_Field = helper.driver.findElement(By.id("field_password"));
+        WebElement length_Field = helper.driver.findElement(By.id("field_length"));
+        helper.driver.findElement(By.cssSelector("button[ng-click=\"vm.generate()\"]")).click();
+        wait.until(ExpectedConditions.attributeToBeNotEmpty(password_Field, "value"));
+        validate_length(password_Field.getAttribute("value"),length_Field.getAttribute("value"));
+        validate_charaters("Upper",password_Field.getAttribute("value"));
+        wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//span[contains(@class, 'glyphicon-save')]")));
+        helper.driver.findElement(By.xpath("//span[contains(@class, 'glyphicon-save')]")).click();  
     }
 
     @Test
     public void password_with_Digits_only() throws Exception{
-    	helper.driver.findElement(By.xpath("//span[contains(@class, 'glyphicon-refresh')]")).click();
-    	confirm_click("field_lower");
-    	confirm_click("field_upper");
-    	confirm_click("field_special");
-    	WebElement password_Field = helper.driver.findElement(By.id("field_password"));
-    	WebElement length_Field = helper.driver.findElement(By.id("field_length"));
-    	helper.driver.findElement(By.cssSelector("button[ng-click='vm.generate()']")).click();
-    	wait.until(ExpectedConditions.attributeToBeNotEmpty(password_Field, "value"));
-    	validate_length(password_Field.getAttribute("value"),length_Field.getAttribute("value")); 
-    	validate_charaters("Digits",password_Field.getAttribute("value"));
-        helper.driver.findElement(By.xpath("//span[contains(@class, 'glyphicon-ban-circle')]")).click();   
+        wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//span[contains(@class, 'glyphicon-refresh')]")));
+        helper.driver.findElement(By.xpath("//span[contains(@class, 'glyphicon-refresh')]")).click();
+        confirm_click("field_lower");
+        confirm_click("field_upper");
+        confirm_click("field_special");
+        WebElement password_Field = helper.driver.findElement(By.id("field_password"));
+        WebElement length_Field = helper.driver.findElement(By.id("field_length"));
+        helper.driver.findElement(By.cssSelector("button[ng-click='vm.generate()']")).click();
+        wait.until(ExpectedConditions.attributeToBeNotEmpty(password_Field, "value"));
+        validate_length(password_Field.getAttribute("value"),length_Field.getAttribute("value")); 
+        validate_charaters("Digits",password_Field.getAttribute("value"));
+        wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//span[contains(@class, 'glyphicon-save')]")));
+        helper.driver.findElement(By.xpath("//span[contains(@class, 'glyphicon-save')]")).click();   
     }
 
     @Test
     public void password_with_SpecialChar_only() throws Exception{
-    	helper.driver.findElement(By.xpath("//span[contains(@class, 'glyphicon-refresh')]")).click();
-    	confirm_click("field_lower");
-    	confirm_click("field_upper");
-    	confirm_click("field_digits");
-    	helper.driver.findElement(By.id("field_length")).clear();
-    	helper.driver.findElement(By.id("field_length")).sendKeys("5");	//Setting Given Lenght to 5 charaters
-    	WebElement password_Field = helper.driver.findElement(By.id("field_password"));
-    	WebElement length_Field = helper.driver.findElement(By.id("field_length"));
-    	helper.driver.findElement(By.cssSelector("button[ng-click='vm.generate()']")).click();
-    	wait.until(ExpectedConditions.attributeToBeNotEmpty(password_Field, "value"));
-    	validate_length(password_Field.getAttribute("value"),length_Field.getAttribute("value"));
-    	validate_charaters("Special",password_Field.getAttribute("value"));
+        wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//span[contains(@class, 'glyphicon-refresh')]")));
+        helper.driver.findElement(By.xpath("//span[contains(@class, 'glyphicon-refresh')]")).click();
+        confirm_click("field_lower");
+        confirm_click("field_upper");
+        confirm_click("field_digits");
+        helper.driver.findElement(By.id("field_length")).clear();
+        helper.driver.findElement(By.id("field_length")).sendKeys("5"); //Setting Given Lenght to 5 charaters
+        WebElement password_Field = helper.driver.findElement(By.id("field_password"));
+        WebElement length_Field = helper.driver.findElement(By.id("field_length"));
+        helper.driver.findElement(By.cssSelector("button[ng-click='vm.generate()']")).click();
+        wait.until(ExpectedConditions.attributeToBeNotEmpty(password_Field, "value"));
+        validate_length(password_Field.getAttribute("value"),length_Field.getAttribute("value"));
+        validate_charaters("Special",password_Field.getAttribute("value"));
+        wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//span[contains(@class, 'glyphicon-ban-circle')]")));
         helper.driver.findElement(By.xpath("//span[contains(@class, 'glyphicon-ban-circle')]")).click();  
     }
 
     private void validate_length(String password,String length_in_string){
-    	int given_length = Integer.parseInt(length_in_string);
-    	int password_length = password.length();
-    	assertEquals(given_length,password_length);
+        int given_length = Integer.parseInt(length_in_string);
+        int password_length = password.length();
+        assertEquals(given_length,password_length);
     }
 
     private void confirm_click(String field) throws Exception {
-    	wait.until(ExpectedConditions.elementToBeClickable(By.id(field)));
-    	helper.driver.findElement(By.id(field)).click();
+        wait.until(ExpectedConditions.elementToBeClickable(By.id(field)));
+        WebElement element = helper.driver.findElement(By.id(field));
+        Actions actions = new Actions(helper.driver);
+        actions.moveToElement(element).click().perform();
     }
 
     private void validate_charaters(String type, String password) {
-    	switch (type) {
-			case "Upper":
-				assertEquals(true, StringUtils.isAllUpperCase(password));
-				break;
-			case "Lower":
-				assertEquals(true, StringUtils.isAllLowerCase(password));
-				break;
-			case "Digits":
-				assertEquals(true, StringUtils.isNumeric(password));
-				break;
-			case "Special":
-				assertEquals(false, StringUtils.isNumeric(password));
-				assertEquals(false, StringUtils.isAllLowerCase(password));
-				assertEquals(false, StringUtils.isAllUpperCase(password));
-				break;
-		}
+        switch (type) {
+            case "Upper":
+                assertEquals(true, StringUtils.isAllUpperCase(password));
+                break;
+            case "Lower":
+                assertEquals(true, StringUtils.isAllLowerCase(password));
+                break;
+            case "Digits":
+                assertEquals(true, StringUtils.isNumeric(password));
+                break;
+            case "Special":
+                assertEquals(false, StringUtils.isNumeric(password));
+                assertEquals(false, StringUtils.isAllLowerCase(password));
+                assertEquals(false, StringUtils.isAllUpperCase(password));
+                break;
+        }
     }
 
-	@AfterClass
-	public static void tearDown() throws Exception {
-		if(helper.isElementPresent(By.cssSelector("#site-" + siteName))){
-			helper.deleteSaturnVaultAccount(siteName, false);
-		}
+    @After
+    public void tearDown() throws Exception {
+        if(helper.isElementPresent(By.cssSelector("#site-" + siteName))){
+            helper.deleteSaturnVaultAccount(siteName, false);
+        }
         helper.tearDown();
-	}
+    }
 }
