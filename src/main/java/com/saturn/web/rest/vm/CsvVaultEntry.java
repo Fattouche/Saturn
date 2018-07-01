@@ -19,11 +19,25 @@ public class CsvVaultEntry {
     @CsvBindByName
     private String password;
 
+    /**
+     * @param url the url to set
+     */
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
 	/**
      * @return the url
      */
     public String getUrl() {
         return url;
+    }
+
+    /**
+     * @param name the name to set
+     */
+    public void setName(String name) {
+        this.name = name;
     }
 
     /**
@@ -34,10 +48,24 @@ public class CsvVaultEntry {
     }
 
     /**
+     * @param password the password to set
+     */
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    /**
      * @return the password
      */
     public String getPassword() {
         return password;
+    }
+
+    /**
+     * @param username the username to set
+     */
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     /**

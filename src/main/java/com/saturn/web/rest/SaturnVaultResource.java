@@ -2,6 +2,9 @@ package com.saturn.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import com.opencsv.bean.CsvToBeanBuilder;
+import com.opencsv.bean.StatefulBeanToCsv;
+import com.opencsv.bean.StatefulBeanToCsvBuilder;
+import com.opencsv.enums.CSVReaderNullFieldIndicator;
 import com.saturn.domain.SaturnVault;
 import com.saturn.service.SaturnVaultService;
 import com.saturn.service.dto.SaturnVaultDTO;
@@ -13,6 +16,7 @@ import io.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -21,10 +25,13 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.inject.Inject;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -138,21 +145,20 @@ public class SaturnVaultResource {
 	/**
 	 * POST /saturn-vaults/import : Import a vault CSV.
 	 *
-	 * @param saturnPass the saturnPass to create
-	 * @return the ResponseEntity with status 201 (Created) and with body the new saturnPass, or with status 400 (Bad
-	 * Request) if the saturnPass has already an ID
-	 * @throws URISyntaxException if the Location URI syntax is incorrect
+	 * @param file the CSV file to import
+	 * @return An empty ResponseEntity with headers and the status containing information on the output
 	 */
 	@PostMapping("/saturn-vaults/import")
 	@Timed
-	public ResponseEntity<Void> importVaultCsv(@RequestParam("file") MultipartFile file) throws URISyntaxException, IOException {
+	public ResponseEntity<Void> importVaultCsv(@RequestParam("file") MultipartFile file) throws IOException {
 		log.debug("Reading CSV file...");
 
 		InputStreamReader isr = new InputStreamReader(file.getInputStream());
 		Integer entryCount = 0;
 
 		try {
-			List<CsvVaultEntry> entries = new CsvToBeanBuilder(isr).withType(CsvVaultEntry.class).build().parse();
+			List<CsvVaultEntry> entries = new CsvToBeanBuilder(isr).withType(CsvVaultEntry.class)
+				.withFieldAsNull(CSVReaderNullFieldIndicator.BOTH).build().parse();
 
 			for (CsvVaultEntry e : entries) {
 				// Skip entries without any data
@@ -191,5 +197,41 @@ public class SaturnVaultResource {
 		
 		return ResponseEntity.ok()
 			.headers(HeaderUtil.createAlert("Imported " + entryCount.toString() + " entries into the vault!", "saturnPass")).build();
+	}
+
+	/**
+	 * POST /saturn-vaults/import : Import a vault CSV.
+	 *
+	 * @param saturnPass the saturnPass to create
+	 * @return the ResponseEntity with status 201 (Created) and with body the new saturnPass, or with status 400 (Bad
+	 * Request) if the saturnPass has already an ID
+	 */
+	@GetMapping("/saturn-vaults/export")
+	@Timed
+	public void exportVaultCsv(HttpServletResponse response) throws IOException {
+		response.setContentType("text/csv");
+    	response.setHeader("Content-Disposition","attachment;filename=saturnvault.csv");
+
+		ServletOutputStream out = response.getOutputStream();
+		OutputStreamWriter writer = new OutputStreamWriter(out);
+		StatefulBeanToCsv<CsvVaultEntry> beanToCsv = new StatefulBeanToCsvBuilder<CsvVaultEntry>(writer).build();
+		Page<SaturnVaultDTO> page = saturnPassService.findAllOfCurrentUser(new PageRequest(0, Integer.MAX_VALUE));
+
+		for (SaturnVaultDTO e : page.getContent()) {
+			try {
+				CsvVaultEntry entry = new CsvVaultEntry();
+				
+				// Saturn vault does not have individual name/url, so we'll use site as name and leave url blank
+				entry.setName(e.getSite());
+				entry.setUrl(null);
+				entry.setUsername(e.getLogin());
+				entry.setPassword(e.getPassword());
+				beanToCsv.write(entry);
+			} catch(Exception er) {
+				log.debug("Error writing vault entry with ID " + e.getId() + " to CSV", er);
+			}
+		}
+
+		writer.close();
 	}
 }

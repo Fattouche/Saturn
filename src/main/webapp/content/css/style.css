@@ -46,11 +46,16 @@ a:hover {
 	color:#eee;	
 }
 
+a.btn {
+  color: #333;
+}
+
 .btn {
   padding: 8px 20px;
   border-radius: 4px;
   border:none;
   margin-top: 10px;
+  background: #dddddd;
 }
 
 .btn-secondary:hover {
