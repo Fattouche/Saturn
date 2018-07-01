@@ -4,6 +4,8 @@ services:
     image: selenium/standalone-firefox:3.12.0-boron
     container_name: saturn_selenium
     shm_size: 2g
+    volumes:
+      - shared_temp:/tmp
     networks:
       - saturn_default
   saturn_test:
@@ -14,6 +16,7 @@ services:
       - selenium
     volumes:
       - ..:/saturn
+      - shared_temp:/tmp
     networks:
       - saturn_default
     command: ["mvn", "-e", "-Dtest=Test*", "test"]
@@ -21,3 +24,6 @@ services:
 networks:
   saturn_default:
     external: true
+
+volumes:
+  shared_temp:

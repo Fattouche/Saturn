@@ -91,7 +91,7 @@ public class TestHelper {
 		closeForm("editForm");
 		closeForm("deleteForm");
 
-		driver.findElement(By.cssSelector("#site-" + siteName + " .delete-vault")).click();
+		driver.findElement(By.cssSelector("[id='site-" + siteName + "'] .delete-vault")).click();
 		if (!cancel) {
 			driver.findElement(By.cssSelector("form[name=deleteForm] .delete-button")).click();
 		} else {
