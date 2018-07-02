@@ -20,7 +20,7 @@
             upper: true,
             digits: true,
             special: true,
-            repetition: false
+            no_repetition: false
         };
 
         vm.chars = {
@@ -59,11 +59,13 @@
             }
 
             for (var i = 0; i < vm.genOptions.length; i++) {
-                var position = Math.round(Math.random() * chars.length);
+                var position = Math.floor(Math.random() * chars.length);
 
-                if (vm.genOptions.repetition) {
+                if (vm.genOptions.no_repetition) {
                     if (vm.password.indexOf(chars[position]) === -1) {
                         vm.password += chars[position];
+                    } else {
+                        i--;
                     }
                 } else {
                     vm.password += chars[position];
