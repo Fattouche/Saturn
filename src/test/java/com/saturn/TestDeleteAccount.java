@@ -35,6 +35,8 @@ public class TestDeleteAccount {
 		//		after deleting the vault, the row representing it is not there.
 		assertFalse(helper.isElementPresent(By.cssSelector("#site-" + siteName + " .delete-vault")));
 	}
+
+	@Test
 	public void deleteSaturnVaultAccountButCancelTest(){
 		helper.login();
 
