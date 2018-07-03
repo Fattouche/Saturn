@@ -39,7 +39,7 @@ public class TestUpdatePassword {
     @Test
     public void update_Site() throws Exception {
 
-        // Open the edit password dialogue box.
+        // Open the edit 'site' dialogue box.
         String old_id = helper.driver.findElement(By.xpath("//tr[1]/td[1]")).getText();
         String site = helper.driver.findElement(By.xpath("//tr[1]/td[2]")).getText();
         helper.driver.findElement(By.xpath("//tr[1]/td[7]/div/button[1]")).click();
@@ -47,7 +47,7 @@ public class TestUpdatePassword {
 
         String new_Site_string = "TestingSite";
 
-        // Input new password data and confirm the edit.
+        // Input new site name and confirm the edit.
         helper.driver.findElement(By.id("field_site")).clear();
 		helper.driver.findElement(By.id("field_site")).sendKeys(new_Site_string);  
                 
@@ -57,18 +57,20 @@ public class TestUpdatePassword {
         String message = helper.driver.findElement(By.xpath("//pre[1]")).getText();
         String new_id = helper.driver.findElement(By.xpath("//tr[1]/td[1]")).getText();
         String new_site = helper.driver.findElement(By.xpath("//tr[1]/td[2]")).getText();
-
+        // confirm the change is made
         assertEquals(old_id, new_id);
         assertEquals(new_site, new_Site_string);
     }
 
     @Test
     public void empty_Site() throws Exception {
+        // Open dialogue box
         helper.driver.findElement(By.xpath("//tr[1]/td[7]/div/button[1]")).click();
         wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("button[type=submit]")));
-
+        // clear login field
         helper.driver.findElement(By.id("field_site")).clear();
         WebElement submit = helper.driver.findElement(By.cssSelector("button[type=submit]"));
+        // Check if systems allows to save
         assertEquals("true", submit.getAttribute("disabled"));
         helper.driver.findElement(By.xpath("//span[contains(@class, 'glyphicon-ban-circle')]")).click();
     }
@@ -76,7 +78,7 @@ public class TestUpdatePassword {
 
     @Test
     public void update_Login() throws Exception {
-    	// Open the edit password dialogue box.
+    	// Open the edit 'login' dialogue box.
         String old_id = helper.driver.findElement(By.xpath("//tr[1]/td[1]")).getText();
         String login = helper.driver.findElement(By.xpath("//tr[1]/td[3]")).getText();
         helper.driver.findElement(By.xpath("//tr[1]/td[7]/div/button[1]")).click();
@@ -84,7 +86,7 @@ public class TestUpdatePassword {
 
         String new_Login_string = "TestingLogin";
 
-        // Input new password data and confirm the edit.
+        // Input new login data and confirm the edit.
         helper.driver.findElement(By.id("field_login")).clear();
         helper.driver.findElement(By.id("field_login")).sendKeys(new_Login_string);
          
@@ -94,25 +96,27 @@ public class TestUpdatePassword {
         String message = helper.driver.findElement(By.xpath("//pre[1]")).getText();
         String new_id = helper.driver.findElement(By.xpath("//tr[1]/td[1]")).getText();
         String new_login = helper.driver.findElement(By.xpath("//tr[1]/td[3]")).getText();
-
+        // Confirm the change is made
         assertEquals(old_id, new_id);
         assertEquals(new_login, new_Login_string);
     }
 
     @Test
     public void empty_Login() throws Exception {
+        //open dialogue box
         helper.driver.findElement(By.xpath("//tr[1]/td[7]/div/button[1]")).click();
         wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("button[type=submit]")));
-
+        //clear login field
         helper.driver.findElement(By.id("field_login")).clear();
         WebElement submit = helper.driver.findElement(By.cssSelector("button[type=submit]"));
+        // check if the system allows to save
         assertEquals("true", submit.getAttribute("disabled"));
         helper.driver.findElement(By.xpath("//span[contains(@class, 'glyphicon-ban-circle')]")).click();
     }
 
     @Test
     public void update_Password() throws Exception {
-    	// Open the edit password dialogue box.
+    	// Open the edit 'password' dialogue box.
         String old_id = helper.driver.findElement(By.xpath("//tr[1]/td[1]")).getText();
         String password = helper.driver.findElement(By.xpath("//tr[1]/td[4]/div/input")).getAttribute("value");
         helper.driver.findElement(By.xpath("//tr[1]/td[7]/div/button[1]")).click();
@@ -130,18 +134,20 @@ public class TestUpdatePassword {
         String message = helper.driver.findElement(By.xpath("//pre[1]")).getText();
         String new_id = helper.driver.findElement(By.xpath("//tr[1]/td[1]")).getText();
         String new_password = helper.driver.findElement(By.xpath("//tr[1]/td[4]/div/input")).getAttribute("value");
-
+        // Confirm the change is made
         assertEquals(old_id, new_id);
         assertEquals(new_password, new_Password_string); 	
     }
 
     @Test
     public void empty_Password() throws Exception {
+        // open dialoogue box
         helper.driver.findElement(By.xpath("//tr[1]/td[7]/div/button[1]")).click();
         wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("button[type=submit]")));
-
+        // clear password field
         helper.driver.findElement(By.id("field_password")).clear();
         WebElement submit = helper.driver.findElement(By.cssSelector("button[type=submit]"));
+        // Check of the system allows to save
         assertEquals("true", submit.getAttribute("disabled"));
         helper.driver.findElement(By.xpath("//span[contains(@class, 'glyphicon-ban-circle')]")).click();
     }
@@ -161,14 +167,14 @@ public class TestUpdatePassword {
         String new_Login_string = "TestingLogin";
         String new_Password_string = "TestingPassword";
 
-        // Input new password data and confirm the edit.
+        // Input new password data 
         helper.driver.findElement(By.id("field_site")).clear();
 		helper.driver.findElement(By.id("field_site")).sendKeys(new_Site_string);
         helper.driver.findElement(By.id("field_login")).clear();
         helper.driver.findElement(By.id("field_login")).sendKeys(new_Login_string);
         helper.driver.findElement(By.id("field_password")).clear();
 		helper.driver.findElement(By.id("field_password")).sendKeys(new_Password_string);
-
+        // cancel the edit
         helper.driver.findElement(By.xpath("//span[contains(@class, 'glyphicon-ban-circle')]")).click();
         wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//pre[1]")));
 
@@ -177,7 +183,7 @@ public class TestUpdatePassword {
         String new_site = helper.driver.findElement(By.xpath("//tr[1]/td[2]")).getText();
         String new_login = helper.driver.findElement(By.xpath("//tr[1]/td[3]")).getText();
         String new_password = helper.driver.findElement(By.xpath("//tr[1]/td[4]/div/input")).getAttribute("value");
-
+        // Confirm that no changes were saves
         assertEquals(old_id, new_id);
         assertEquals(new_site, new_Site_string);
         assertEquals(new_login, new_Login_string);
@@ -187,9 +193,9 @@ public class TestUpdatePassword {
 
 	@AfterClass
 	public static void tearDown() throws Exception {
-//		if(helper.isElementPresent(By.cssSelector("#site-" + siteName))){
-//			helper.deleteSaturnVaultAccount(siteName, false);
-//		}
-//        helper.tearDown();
+		if(helper.isElementPresent(By.cssSelector("#site-" + siteName))){
+			helper.deleteSaturnVaultAccount(siteName, false);
+		}
+        helper.tearDown();
 	}
 }
