@@ -50,9 +50,7 @@ public class SaturnVaultService {
 			saturnPass.setUser(userService.getCurrentUser());
 		}
 
-		saturnPass.site(dto.getSite())
-			.login(dto.getLogin())
-			.password(dto.getPassword());
+		saturnPass.site(dto.getSite()).login(dto.getLogin()).password(dto.getPassword());
 
 		return new SaturnVaultDTO(saturnPassRepository.save(saturnPass));
 	}
@@ -87,6 +85,10 @@ public class SaturnVaultService {
 	 * @param id the id of the entity
 	 */
 	public void delete(Long id) {
+		if (!saturnPassRepository.exists(id)) {
+			return;
+		}
+
 		log.debug("Request to delete SaturnVault : {}", id);
 		log.debug("Current user: {}", saturnPassRepository.findOne(id).getUser().getEmail());
 		log.debug("What security says the current user is: {}", SecurityUtils.getCurrentUser());
@@ -95,6 +97,6 @@ public class SaturnVaultService {
 			log.debug("Authorized - deleting saturn vault : {}", id);
 			saturnPassRepository.delete(id);
 
-        }
+		}
 	}
 }
