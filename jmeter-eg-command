@@ -1,0 +1,1 @@
+jmeter -n -t saturn.jmx -l output_with_slave -R 142.104.91.148:40000 -Jserver.rmi.ssl.disable=true -Jclient.rmi.localport=40001
