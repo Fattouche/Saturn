@@ -45,7 +45,7 @@ public class SaturnVault extends AbstractDatedEntity implements Serializable {
 		byte[] key_bytes = BaseEncoding.base16().lowerCase().decode(System.getenv("SATURN_VAULT_KEY"));
 		key = new SecretKeySpec(key_bytes, 0, key_bytes.length, "AES");
 
-		byte[] iv = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+		byte[] iv = BaseEncoding.base16().lowerCase().decode(System.getenv("SATURN_VAULT_IV"));
 		ivspec = new IvParameterSpec(iv);
 	}
 
