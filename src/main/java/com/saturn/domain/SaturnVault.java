@@ -8,10 +8,12 @@ import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 import java.util.Objects;
 import javax.crypto.Cipher;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
+import javax.crypto.KeyGenerator;
 import java.security.Key;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -29,9 +31,17 @@ public class SaturnVault extends AbstractDatedEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private static final Key k = new SecretKeySpec(new byte[]{(byte) 0x21, (byte) 0x9e, (byte) 0x48, (byte) 0xd7,
-		(byte) 0x50, (byte) 0x49, (byte) 0x1d, (byte) 0x8c, (byte) 0x1e, (byte) 0x37,
-		(byte) 0x28, (byte) 0xaf, (byte) 0xcc, (byte) 0xfd, (byte) 0x9e, (byte) 0xc7}, "AES");
+	private Key k;
+
+	public SaturnVault() {
+		try {
+			KeyGenerator keyGen = KeyGenerator.getInstance("AES");
+			keyGen.init(256);
+			k = keyGen.generateKey();
+		} catch(NoSuchAlgorithmException ex) {
+			Logger.getLogger(SaturnVault.class.getName()).log(Level.SEVERE, null, ex);
+		}
+	}
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -91,10 +101,11 @@ public class SaturnVault extends AbstractDatedEntity implements Serializable {
 	public String getPassword() {
 		if (password != null) {
 			try {
-				Cipher c = Cipher.getInstance("AES");
+				System.out.println("***************************HALLO!*******************************");
+				Cipher c = Cipher.getInstance("AES/CBC/PKCS5Padding", "BC");
 				c.init(Cipher.DECRYPT_MODE, k);
 				return new String(c.doFinal(DatatypeConverter.parseBase64Binary(password)));
-			} catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException ex) {
+			} catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException | NoSuchProviderException ex ) {
 				Logger.getLogger(SaturnVault.class.getName()).log(Level.SEVERE, null, ex);
 			}
 		}
@@ -109,10 +120,11 @@ public class SaturnVault extends AbstractDatedEntity implements Serializable {
 
 	public void setPassword(String password) {
 		try {
-			Cipher c = Cipher.getInstance("AES");
+				System.out.println("***************************HALLO!*******************************");
+			Cipher c = Cipher.getInstance("AES/CBC/PKCS5Padding", "BC");
 			c.init(Cipher.ENCRYPT_MODE, k);
 			this.password = DatatypeConverter.printBase64Binary(c.doFinal(password.getBytes()));
-		} catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException ex) {
+		} catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException | NoSuchProviderException ex) {
 			Logger.getLogger(SaturnVault.class.getName()).log(Level.SEVERE, null, ex);
 			this.password = null;
 		}
