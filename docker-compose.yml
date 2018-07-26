@@ -18,6 +18,8 @@ services:
     depends_on: 
       - mysql
     container_name: saturn_web_server
+    environment:
+      SATURN_VAULT_KEY: 219e48d750491d8c1e3728afccfd9ec7
     ports:
       - "8080:8080" 
     volumes: 

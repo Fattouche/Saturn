@@ -3,7 +3,7 @@ FROM jimador/docker-jdk-8-maven-node
 COPY package.json .
 RUN npm install
 COPY pom.xml .
-RUN ["mvn", "verify", "clean", "--fail-never"]
+RUN ["mvn", "verify", "clean", "--fail-never", "-Denv.passwddb=saturn"]
 COPY . .
 RUN mvn package
 
