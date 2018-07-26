@@ -20,6 +20,7 @@ services:
     container_name: saturn_web_server
     environment:
       SATURN_VAULT_KEY: 219e48d750491d8c1e3728afccfd9ec7
+      SATURN_VAULT_IV: 12781563267887344565432124689753
     ports:
       - "8080:8080" 
     volumes: 

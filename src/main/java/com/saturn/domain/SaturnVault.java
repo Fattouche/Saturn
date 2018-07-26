@@ -35,9 +35,6 @@ public class SaturnVault extends AbstractDatedEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	// @Value("${saturn.vault.key}")
-	// private static Key key_bytes;
-
 	private static Key key;
 	private static IvParameterSpec ivspec;
 
