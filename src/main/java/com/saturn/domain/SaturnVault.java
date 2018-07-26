@@ -5,10 +5,12 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
+import javax.crypto.spec.IvParameterSpec;
 import java.io.Serializable;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
+import java.security.InvalidAlgorithmParameterException;
 import java.util.Objects;
 import javax.crypto.Cipher;
 import javax.crypto.NoSuchPaddingException;
@@ -21,6 +23,8 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.xml.bind.DatatypeConverter;
 
+import com.google.common.io.BaseEncoding;
+
 /**
  * A SaturnVault.
  */
@@ -31,16 +35,18 @@ public class SaturnVault extends AbstractDatedEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private Key k;
+	// @Value("${saturn.vault.key}")
+	// private static Key key_bytes;
 
-	public SaturnVault() {
-		try {
-			KeyGenerator keyGen = KeyGenerator.getInstance("AES");
-			keyGen.init(256);
-			k = keyGen.generateKey();
-		} catch(NoSuchAlgorithmException ex) {
-			Logger.getLogger(SaturnVault.class.getName()).log(Level.SEVERE, null, ex);
-		}
+	private static Key key;
+	private static IvParameterSpec ivspec;
+
+	static {
+		byte[] key_bytes = BaseEncoding.base16().lowerCase().decode(System.getenv("SATURN_VAULT_KEY"));
+		key = new SecretKeySpec(key_bytes, 0, key_bytes.length, "AES");
+
+		byte[] iv = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+		ivspec = new IvParameterSpec(iv);
 	}
 
 	@Id
@@ -101,11 +107,10 @@ public class SaturnVault extends AbstractDatedEntity implements Serializable {
 	public String getPassword() {
 		if (password != null) {
 			try {
-				System.out.println("***************************HALLO!*******************************");
-				Cipher c = Cipher.getInstance("AES/CBC/PKCS5Padding", "BC");
-				c.init(Cipher.DECRYPT_MODE, k);
+				Cipher c = Cipher.getInstance("AES/CBC/PKCS5Padding");
+				c.init(Cipher.DECRYPT_MODE, key, ivspec);
 				return new String(c.doFinal(DatatypeConverter.parseBase64Binary(password)));
-			} catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException | NoSuchProviderException ex ) {
+			} catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException | InvalidAlgorithmParameterException ex ) {
 				Logger.getLogger(SaturnVault.class.getName()).log(Level.SEVERE, null, ex);
 			}
 		}
@@ -120,11 +125,10 @@ public class SaturnVault extends AbstractDatedEntity implements Serializable {
 
 	public void setPassword(String password) {
 		try {
-				System.out.println("***************************HALLO!*******************************");
-			Cipher c = Cipher.getInstance("AES/CBC/PKCS5Padding", "BC");
-			c.init(Cipher.ENCRYPT_MODE, k);
+			Cipher c = Cipher.getInstance("AES/CBC/PKCS5Padding");
+			c.init(Cipher.ENCRYPT_MODE, key, ivspec);
 			this.password = DatatypeConverter.printBase64Binary(c.doFinal(password.getBytes()));
-		} catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException | NoSuchProviderException ex) {
+		} catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException | InvalidAlgorithmParameterException ex) {
 			Logger.getLogger(SaturnVault.class.getName()).log(Level.SEVERE, null, ex);
 			this.password = null;
 		}
