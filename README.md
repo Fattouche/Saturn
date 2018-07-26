@@ -45,6 +45,8 @@ To configure the system:
    2. `spring.datasource.username` to the database username (defaults to **saturn**)
    3. `spring.datasource.password` to the password of the database user set on previous step (defaults to **saturn**)
    4. `server.port` with server port (defaults to **8080**)
+4. Set environment variable `ENV_PASSWDDB` to the desired database root password
+5. Set environment variable `SATURN_VAULT_KEY` to the desired SaturnVault encryption key
 
 After that execute `mvn spring-boot:run` from _inside_ the application's folder to run the application and navigate to [http://localhost:8080](http://localhost:8080) in your browser (note the port number might be different according to your configuration and sudo might be necessary if the application is configured to run on a port below 1024).
 
