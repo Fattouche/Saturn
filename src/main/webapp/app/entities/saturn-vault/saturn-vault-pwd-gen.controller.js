@@ -59,7 +59,9 @@
             }
 
             for (var i = 0; i < vm.genOptions.length; i++) {
-                var position = Math.floor(Math.random() * chars.length);
+                var array = new Uint32Array(1);
+                window.crypto.getRandomValues(array)
+                var position = Math.floor(array[0] % chars.length);
 
                 if (vm.genOptions.no_repetition) {
                     if (vm.password.indexOf(chars[position]) === -1) {
